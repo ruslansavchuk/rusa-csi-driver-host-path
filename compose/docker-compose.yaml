@@ -1,0 +1,32 @@
+version: "3.7"
+
+services:
+  controller:
+    build:
+      context: ./../src
+      dockerfile: Dockerfile-controller
+    restart: on-failure
+    environment:
+    - ConfigurationOptions__UnixSocket=/sockets/controller.sock
+    - ConfigurationOptions__DbPath=./
+    volumes:
+       - /tmp/sockets:/sockets
+    networks:
+      - csi-plugin
+
+  node:
+    build:
+      context: ./../src
+      dockerfile: Dockerfile-node
+    restart: on-failure
+    environment:
+    - ConfigurationOptions__UnixSocket=/sockets/node.sock
+    - ConfigurationOptions__DbPath=./
+    volumes:
+       - /tmp/sockets:/sockets
+    networks:
+      - csi-plugin
+
+networks:
+  csi-plugin:
+    name: csi-plugin-network

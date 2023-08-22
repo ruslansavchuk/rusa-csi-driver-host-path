@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Protobuf Include="..\..\Protos\csi.proto" GrpcServices="Server" Link="Protos\csi.proto" />
+        <PackageReference Include="Grpc.AspNetCore" Version="2.55.0" />
+    </ItemGroup>
+</Project>

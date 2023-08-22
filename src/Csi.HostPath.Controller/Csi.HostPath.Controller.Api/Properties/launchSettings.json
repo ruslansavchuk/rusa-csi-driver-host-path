@@ -1,0 +1,14 @@
+﻿{
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConfigurationOptions__UnixSocket": "/tmp/foo.sock",
+        "ConfigurationOptions__DbPath": "./"
+      }
+    }
+  }
+}

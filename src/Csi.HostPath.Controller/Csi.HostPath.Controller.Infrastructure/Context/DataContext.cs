@@ -1,4 +1,4 @@
-﻿using Csi.HostPath.Controller.Infrastructure.Context.DataModels;
+﻿using Csi.HostPath.Controller.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Csi.HostPath.Controller.Infrastructure.Context;
@@ -23,7 +23,7 @@ public class DataContext : DbContext
     //
     // #endregion
     
-    public DbSet<VolumeDataModel> Volumes { get; set; }
+    public DbSet<Volume> Volumes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

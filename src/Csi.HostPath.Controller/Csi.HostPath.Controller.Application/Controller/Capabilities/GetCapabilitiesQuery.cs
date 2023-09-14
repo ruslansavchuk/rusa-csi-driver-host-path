@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Csi.HostPath.Controller.Application.Capabilities;
+namespace Csi.HostPath.Controller.Application.Controller.Capabilities;
 
 public enum Capability
 {
@@ -10,11 +10,11 @@ public enum Capability
     GetCapacity = 4
 }
 
-public record GetCapabilities : IRequest<List<Capability>>;
+public record GetCapabilitiesQuery : IRequest<List<Capability>>;
 
-public class GetCapabilitiesRequestHandler : IRequestHandler<GetCapabilities, List<Capability>>
+public class GetCapabilitiesRequestHandler : IRequestHandler<GetCapabilitiesQuery, List<Capability>>
 {
-    public Task<List<Capability>> Handle(GetCapabilities request, CancellationToken cancellationToken)
+    public Task<List<Capability>> Handle(GetCapabilitiesQuery request, CancellationToken cancellationToken)
     {
         return Task.FromResult(new List<Capability>
         {

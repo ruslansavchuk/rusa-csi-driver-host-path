@@ -1,18 +1,19 @@
 ﻿using Csi.HostPath.Controller.Application.Common.Dto;
 using Csi.HostPath.Controller.Application.Common.Exceptions;
 using Csi.HostPath.Controller.Application.Common.Repositories;
-using Csi.HostPath.Controller.Application.Volumes.Validators;
+using Csi.HostPath.Controller.Application.Controller.Volumes.Validators;
 using Csi.HostPath.Controller.Domain.Entities;
 using Csi.HostPath.Controller.Domain.Enums;
 using FluentValidation;
 using MediatR;
 
-namespace Csi.HostPath.Controller.Application.Volumes.Commands;
+namespace Csi.HostPath.Controller.Application.Controller.Volumes.Commands;
 
 public record CreateVolumeCommand(
 	string Name, 
-	CapacityRangeDto? Capacity) 
-	: IRequest<VolumeDto>;
+	CapacityRangeDto? Capacity,
+	AccessType? AccessType)
+	: IRequest<Volume>;
 
 public class CreateVolumeValidator : AbstractValidator<CreateVolumeCommand>
 {
@@ -22,10 +23,13 @@ public class CreateVolumeValidator : AbstractValidator<CreateVolumeCommand>
 		    .NotEmpty()
 		    .MaximumLength(128);
 	    RuleFor(r => r.Capacity).SetValidator(new CapacityRangeValidator()!);
-	}
+	    RuleFor(r => r.AccessType)
+		    .NotNull()
+		    .IsInEnum();
+    }
 }
 
-public class CreateVolumeRequestHandler : IRequestHandler<CreateVolumeCommand, VolumeDto>
+public class CreateVolumeRequestHandler : IRequestHandler<CreateVolumeCommand, Volume>
 {
 	private readonly IVolumeRepository _volumeRepository;
 	private const int DefaultVolumeCapacity = 4096;
@@ -35,7 +39,7 @@ public class CreateVolumeRequestHandler : IRequestHandler<CreateVolumeCommand, V
 		_volumeRepository = volumeRepository;
 	}
 
-	public async Task<VolumeDto> Handle(CreateVolumeCommand request, CancellationToken cancellationToken)
+	public async Task<Volume> Handle(CreateVolumeCommand request, CancellationToken cancellationToken)
 	{
 		var requestedCapacity = request.Capacity?.Required ?? 0; 
 		var capacity = requestedCapacity > 0 ? requestedCapacity : DefaultVolumeCapacity;
@@ -46,23 +50,24 @@ public class CreateVolumeRequestHandler : IRequestHandler<CreateVolumeCommand, V
 			var existingVolume = existingVolumes.Single();
 			if (existingVolume.Size < capacity)
 			{
-				throw new ServiceLogicException("Volume with the same name already exists");
+				throw new AlreadyExistsException("Volume with the same name already exists");
 			}
 
-			return new VolumeDto(existingVolume.Id,existingVolume.Name, existingVolume.Size);
+			return existingVolume;
 		}
 
 		var volume = CreateVolumeInternal(request.Name, capacity);
 		await _volumeRepository.Add(volume);
-		
-		return new VolumeDto(volume.Id, volume.Name, volume.Size); 
+
+		return volume; 
 	}
 
 	private Volume CreateVolumeInternal(string name, long capacity)
 	{
 		return new Volume
 		{
-			Id = Guid.NewGuid().ToString(),
+			// todo: think how to generate volume id
+			// Id = Guid.NewGuid().ToString(), 
 			Size = capacity,
 			Name = name,
 			Attached = false,

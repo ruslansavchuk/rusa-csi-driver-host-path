@@ -14,8 +14,8 @@ public class Identity : Csi.V1.Identity.IdentityBase
     {
         return Task.FromResult(new GetPluginInfoResponse
         {
-            Name = string.Empty,
-            VendorVersion = string.Empty
+            Name = "name",
+            VendorVersion = "version"
         });
     }
 

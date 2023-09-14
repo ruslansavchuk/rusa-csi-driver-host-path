@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Csi.HostPath.Controller.Application.Common.Exceptions;
+using FluentValidation;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 
@@ -22,9 +23,21 @@ public class ExceptionInterceptor : Interceptor
         {
             return await continuation(request, context);
         }
-        catch (ValidationException exception)
+        catch (AlreadyExistsException ex)
         {
-            throw new RpcException(new Status(StatusCode.InvalidArgument, exception.Message));
+            throw new RpcException(new Status(StatusCode.AlreadyExists, ex.Message));
+        }
+        catch (NotFoundException ex)
+        {
+            throw new RpcException(new Status(StatusCode.NotFound, ex.Message));
+        }
+        catch (ServiceLogicException ex)
+        {
+            throw new RpcException(new Status(StatusCode.Unknown, ex.Message));
+        }
+        catch (ValidationException ex)
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, ex.Message));
         }
     }
 }

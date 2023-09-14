@@ -14,13 +14,12 @@ namespace Csi.HostPath.Controller.Infrastructure.Migrations
                 name: "Volumes",
                 columns: table => new
                 {
-                    VolumeId = table.Column<string>(type: "TEXT", nullable: false),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Size = table.Column<long>(type: "INTEGER", nullable: false),
                     Path = table.Column<string>(type: "TEXT", nullable: true),
                     AccessType = table.Column<int>(type: "INTEGER", nullable: false),
-                    ParentVolumeId = table.Column<string>(type: "TEXT", nullable: true),
-                    ParentSnapshotId = table.Column<string>(type: "TEXT", nullable: true),
                     Ephemeral = table.Column<bool>(type: "INTEGER", nullable: false),
                     NodeId = table.Column<string>(type: "TEXT", nullable: true),
                     ReadOnlyAttach = table.Column<bool>(type: "INTEGER", nullable: false),
@@ -28,7 +27,7 @@ namespace Csi.HostPath.Controller.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Volumes", x => x.VolumeId);
+                    table.PrimaryKey("PK_Volumes", x => x.Id);
                 });
 
             migrationBuilder.CreateIndex(

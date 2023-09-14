@@ -1,7 +1,7 @@
 ﻿using Csi.HostPath.Controller.Application.Common.Dto;
 using FluentValidation;
 
-namespace Csi.HostPath.Controller.Application.Volumes.Validators;
+namespace Csi.HostPath.Controller.Application.Controller.Volumes.Validators;
 
 public class CapacityRangeValidator : AbstractValidator<CapacityRangeDto>
 {

@@ -26,4 +26,5 @@ var app = builder.Build();
 
 app.MapGrpcService<Identity>();
 app.MapGrpcService<Node>();
+
 app.Run();

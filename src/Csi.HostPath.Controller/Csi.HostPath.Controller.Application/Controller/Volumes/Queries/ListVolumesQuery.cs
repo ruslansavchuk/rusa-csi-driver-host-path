@@ -1,21 +1,22 @@
 ﻿using System.Linq.Expressions;
-using Csi.HostPath.Controller.Application.Common.Dto;
 using Csi.HostPath.Controller.Application.Common.Repositories;
 using Csi.HostPath.Controller.Domain.Entities;
 using FluentValidation;
 using MediatR;
 
-namespace Csi.HostPath.Controller.Application.Volumes.Queries;
+namespace Csi.HostPath.Controller.Application.Controller.Volumes.Queries;
 
-public record ListVolumesQueryResult(string NextToken, List<VolumeDto> Volumes);
+public record ListVolumesQueryResult(int? NextToken, List<Volume> Volumes);
 
 public record ListVolumesQuery(string? Token, int MaxEntries) : IRequest<ListVolumesQueryResult>;
 
-public class ListVolumesValidator : AbstractValidator<ListVolumesQuery>
+public class ListVolumesQueryValidator: AbstractValidator<ListVolumesQuery>
 {
-    public ListVolumesValidator()
+    public ListVolumesQueryValidator()
     {
-        RuleFor(r => r.MaxEntries).GreaterThan(0);
+        RuleFor(i => i.Token)
+            .Must(t => string.IsNullOrWhiteSpace(t) || int.TryParse(t, out var _))
+            .WithMessage("'Token' should be valid int or null");
     }
 }
 
@@ -35,10 +36,15 @@ public class ListVolumesRequestHandler : IRequestHandler<ListVolumesQuery, ListV
             : null;
         
         var volumes = await _volumeRepository.Get(filter);
+        var items = volumes.OrderBy(v => v.Id).AsEnumerable();
 
-        return new ListVolumesQueryResult(null, volumes
-            .Take(request.MaxEntries)
-            .Select(v => new VolumeDto(v.Id, v.Name, v.Size))
-            .ToList());
+        if (!string.IsNullOrEmpty(request.Token) && int.TryParse(request.Token, out var idFilter))
+        {
+            items = volumes.Where(v => v.Id > idFilter);
+        }
+
+        var result = items.Take(request.MaxEntries != default ? request.MaxEntries : 20).ToList();
+
+        return new ListVolumesQueryResult(result.Any() ? result.Max(i => i.Id) : null, result);
     }
 }

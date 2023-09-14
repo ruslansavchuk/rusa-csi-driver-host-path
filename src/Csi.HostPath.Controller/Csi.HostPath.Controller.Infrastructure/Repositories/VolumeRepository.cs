@@ -4,7 +4,6 @@ using AutoMapper.QueryableExtensions;
 using Csi.HostPath.Controller.Application.Common.Repositories;
 using Csi.HostPath.Controller.Domain.Entities;
 using Csi.HostPath.Controller.Infrastructure.Context;
-using Csi.HostPath.Controller.Infrastructure.Context.DataModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Csi.HostPath.Controller.Infrastructure.Repositories;
@@ -12,34 +11,28 @@ namespace Csi.HostPath.Controller.Infrastructure.Repositories;
 public class VolumeRepository : IVolumeRepository
 {
     private readonly DataContext _dataContext;
-    private readonly IMapper _mapper;
 
-    public VolumeRepository(
-        DataContext dataContext, 
-        IMapper mapper)
+    public VolumeRepository(DataContext dataContext)
     {
         _dataContext = dataContext;
-        _mapper = mapper;
     }
 
     public async Task Add(Volume volume)
     {
-        var newVolume = _mapper.Map<VolumeDataModel>(volume);
-        await _dataContext.Volumes.AddAsync(newVolume);
+        await _dataContext.Volumes.AddAsync(volume);
         await _dataContext.SaveChangesAsync();
     }
 
-    public async Task<Volume> Get(string id)
+    public Task<Volume> Get(int id)
     {
-        var existingVolume = await GetInternal(id);
-        return _mapper.Map<Volume>(existingVolume);
+        return GetInternal(id);
     }
 
     public Task<List<Volume>> Get(Expression<Func<Volume, bool>>? filter = null)
     {
         var volumes = _dataContext
             .Volumes
-            .ProjectTo<Volume>(_mapper.ConfigurationProvider);
+            .AsQueryable();
 
         if (filter != null)
         {
@@ -52,8 +45,10 @@ public class VolumeRepository : IVolumeRepository
     public async Task Update(Volume volume)
     {
         var existingVolume = await GetInternal(volume.Id);
+
+        // todo: think what to do with updates
+        // existingVolume.Attached = volume.Attached;
         
-        _mapper.Map(volume, existingVolume);
         _dataContext.Volumes.Update(existingVolume);
         await _dataContext.SaveChangesAsync();
     }
@@ -65,8 +60,8 @@ public class VolumeRepository : IVolumeRepository
         await _dataContext.SaveChangesAsync();
     }
 
-    private Task<VolumeDataModel> GetInternal(string id)
+    private Task<Volume> GetInternal(int id)
     {
-        return _dataContext.Volumes.SingleAsync(i => i.VolumeId == id);
+        return _dataContext.Volumes.SingleAsync(i => i.Id == id);
     }
 }

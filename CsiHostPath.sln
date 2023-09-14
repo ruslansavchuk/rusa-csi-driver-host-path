@@ -23,6 +23,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csi.HostPath.Node.Api", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csi.HostPath.Controller.Application", "src\Csi.HostPath.Controller\Csi.HostPath.Controller.Application\Csi.HostPath.Controller.Application.csproj", "{7DCF8245-E090-42A9-8776-2EEBB9D053A1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "compose", "compose", "{7AF9D738-9E30-4A55-A26B-BA9350DC1AE5}"
+	ProjectSection(SolutionItems) = preProject
+		compose\docker-compose.yaml = compose\docker-compose.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

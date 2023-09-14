@@ -8,9 +8,10 @@ services:
     restart: on-failure
     environment:
     - ConfigurationOptions__UnixSocket=/sockets/controller.sock
-    - ConfigurationOptions__DbPath=./
+    - ConfigurationOptions__DbPath=/etc/csi-controller/data
     volumes:
-       - /tmp/sockets:/sockets
+       - /tmp/sockets/controller:/sockets
+       - /tmp/data:/etc/csi-controller/data
     networks:
       - csi-plugin
 
@@ -23,7 +24,7 @@ services:
     - ConfigurationOptions__UnixSocket=/sockets/node.sock
     - ConfigurationOptions__DbPath=./
     volumes:
-       - /tmp/sockets:/sockets
+       - /tmp/sockets/node:/sockets
     networks:
       - csi-plugin
 

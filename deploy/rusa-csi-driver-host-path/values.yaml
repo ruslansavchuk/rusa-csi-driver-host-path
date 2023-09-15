@@ -1,0 +1,4 @@
+pluginName: hostpath.csi.k8s.io
+controllerStateDir: /tmp/state
+nodeDataDir: /tmp/data
+setAsDefault: true

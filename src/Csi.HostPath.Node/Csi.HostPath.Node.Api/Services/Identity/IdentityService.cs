@@ -1,9 +1,9 @@
 ﻿using Csi.V1;
 using Grpc.Core;
 
-namespace Csi.HostPath.Node.Api.Services;
+namespace Csi.HostPath.Node.Api.Services.Identity;
 
-public class Identity : Csi.V1.Identity.IdentityBase
+public class IdentityService : Csi.V1.Identity.IdentityBase
 {
     public override Task<ProbeResponse> Probe(ProbeRequest request, ServerCallContext context)
     {

@@ -7,7 +7,8 @@
       "applicationUrl": "http://localhost:5001",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConfigurationOptions__UnixSocket": "/tmp/node.sock"
+        "ConfigurationOptions__UnixSocket": "/tmp/node.sock",
+        "ConfigurationOptions__CsiDataDirectory": "/tmp/csi-data"
       }
     }
   }

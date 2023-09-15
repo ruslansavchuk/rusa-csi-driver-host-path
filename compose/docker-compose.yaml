@@ -22,9 +22,10 @@ services:
     restart: on-failure
     environment:
     - ConfigurationOptions__UnixSocket=/sockets/node.sock
-    - ConfigurationOptions__DbPath=./
+    - ConfigurationOptions__CsiDataDirectory=/tmp/csi-data
     volumes:
        - /tmp/sockets/node:/sockets
+       - /tmp/csi-data-dir:/tmp/csi-data-dir
     networks:
       - csi-plugin
 

@@ -1,5 +1,8 @@
 using Csi.HostPath.Node.Api.Configuration;
 using Csi.HostPath.Node.Api.Services;
+using Csi.HostPath.Node.Api.Services.Identity;
+using Csi.HostPath.Node.Api.Services.Node;
+using Csi.HostPath.Node.Api.Utils;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,12 +22,13 @@ if (!string.IsNullOrWhiteSpace(ops.Value.UnixSocket))
 
 builder.Services.AddGrpc();
         
-builder.Services.AddScoped<Identity>();
-builder.Services.AddScoped<Node>();
+builder.Services.AddScoped<IdentityService>();
+builder.Services.AddScoped<NodeService>();
+builder.Services.AddSingleton<Mounter>();
 
 var app = builder.Build();
 
-app.MapGrpcService<Identity>();
-app.MapGrpcService<Node>();
+app.MapGrpcService<IdentityService>();
+app.MapGrpcService<NodeService>();
 
 app.Run();

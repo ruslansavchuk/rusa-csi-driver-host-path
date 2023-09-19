@@ -1,4 +1,20 @@
 {{/*
+Csi service account labels
+*/}}
+{{- define "csi-sa-labels" -}}
+{{ include "csi-common-labels" . }}
+app.kubernetes.io/component: csi-service-account
+{{- end }}
+
+{{/*
+Csi controller labels
+*/}}
+{{- define "csi-cr-labels" -}}
+{{ include "csi-common-labels" . }}
+app.kubernetes.io/component: csi-cluster-role
+{{- end }}
+
+{{/*
 Csi controller service labels
 */}}
 {{- define "csi-controller-service-labels" -}}
@@ -39,7 +55,7 @@ app.kubernetes.io/component: csi-driver
 {{- end }}
 
 {{/*
-General lables that should be attached to all objects
+General labels that should be attached to all objects
 */}}
 {{- define "csi-common-labels" -}}
 app.kubernetes.io/part-of: {{ include "csi-name" . }}

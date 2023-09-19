@@ -1,0 +1,87 @@
+---
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: {{ include "csi-name" . }}
+  labels:
+    {{- include "csi-node-labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "csi-node-labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "csi-node-labels" . | nindent 8 }}
+    spec:
+      # not sure if we really need this
+      tolerations:
+      - effect: NoExecute
+        operator: Exists
+      - effect: NoSchedule
+        operator: Exists
+      - key: CriticalAddonsOnly
+        operator: Exists
+      # not sure if we really need this
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "instance.hetzner.cloud/is-root-server"
+                operator: NotIn
+                values:
+                - "true"
+      containers:
+      - name: csi-node-driver-registrar
+        image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.7.0
+        args:
+        - --kubelet-registration-path=/var/lib/kubelet/plugins/csi.hosthath/socket
+        volumeMounts:
+        - name: plugin-dir
+          mountPath: /run/csi
+        - name: registration-dir
+          mountPath: /registration
+      - name: hcloud-csi-driver
+        image: ruslansavchuk/rusa-hostpath-csi-node:0.0.1
+        imagePullPolicy: Always
+        command: [/bin/hcloud-csi-driver-node]
+        env:
+        - name: ConfigurationOptions__UnixSocket
+          value: unix:///run/csi/socket
+        - name: ConfigurationOptions__CsiDataDirectory
+          value: /var/lib/csi-data-dir
+        volumeMounts:
+        - name: kubelet-dir
+          mountPath: /var/lib/kubelet
+          mountPropagation: "Bidirectional"
+        - name: plugin-dir
+          mountPath: /run/csi
+        - name: device-dir
+          mountPath: /dev
+        - name: csi-data-dir
+          mountPath: /var/lib/csi-data-dir
+        securityContext:
+          privileged: true
+      volumes:
+      - name: kubelet-dir
+        hostPath:
+          path: /var/lib/kubelet
+          type: Directory
+      - name: plugin-dir
+        hostPath:
+          path: /var/lib/kubelet/plugins/csi.hetzner.cloud/
+          type: DirectoryOrCreate
+      - name: registration-dir
+        hostPath:
+          path: /var/lib/kubelet/plugins_registry/
+          type: Directory
+      # it is the place where csi node will store its data
+      - hostPath:
+            path: /var/lib/csi-hostpath-data/
+            type: DirectoryOrCreate
+          name: csi-data-dir
+      - name: device-dir
+        hostPath:
+          path: /dev
+          type: Directory

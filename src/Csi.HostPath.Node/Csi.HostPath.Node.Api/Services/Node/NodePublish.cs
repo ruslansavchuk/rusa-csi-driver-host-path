@@ -25,9 +25,18 @@ public partial class NodeService
         // need to create directory before unmounting
 
         var mountDirectory = CreateDataDirectory(volumeId);
-        _mounter.Mount(mountDirectory, targetPath, new []{""});
+        EnsureTargetDirectoryExists(targetPath);
+        _mounter.Mount(mountDirectory, targetPath, new []{"--bind"});
         // 
         return Task.FromResult(new NodePublishVolumeResponse());
+    }
+
+    private void EnsureTargetDirectoryExists(string targetPath)
+    {
+        if (!Directory.Exists(targetPath))
+        {
+            Directory.CreateDirectory(targetPath);
+        }
     }
 
     private string CreateDataDirectory(string volumeId)

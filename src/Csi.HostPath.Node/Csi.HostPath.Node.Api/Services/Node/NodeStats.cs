@@ -7,6 +7,7 @@ public partial class NodeService
 {
     public override Task<NodeGetVolumeStatsResponse> NodeGetVolumeStats(NodeGetVolumeStatsRequest request, ServerCallContext context)
     {
+        return Task.FromResult(new NodeGetVolumeStatsResponse{});
         throw new NotImplementedException();
     }
 }

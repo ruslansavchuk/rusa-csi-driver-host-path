@@ -1,4 +1,5 @@
 pluginName: hostpath.csi.k8s.io
+serviceName: hostpath-csi-controller
 controllerStateDir: /tmp/state
 nodeDataDir: /tmp/data
 setAsDefault: true

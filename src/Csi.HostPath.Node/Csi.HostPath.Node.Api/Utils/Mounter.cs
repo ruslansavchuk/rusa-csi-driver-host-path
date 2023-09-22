@@ -3,7 +3,7 @@
 public class Mounter
 {
     private const string MountUtil = "mount";
-    private const string UnmountUtil = "unmount";
+    private const string UnmountUtil = "umount";
 
     public void Mount(string source, string target, string[] options)
     {

@@ -65,6 +65,13 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 
 {{/*
+Define service name
+*/}}
+{{- define "csi-controller-service-name" -}}
+{{- default "hostpath-csi-controller" .Values.serviceName | quote }}
+{{- end }}
+
+{{/*
 Define plugin name
 */}}
 {{- define "csi-name" -}}

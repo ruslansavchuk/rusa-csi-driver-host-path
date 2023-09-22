@@ -36,21 +36,25 @@ spec:
       - name: csi-node-driver-registrar
         image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.7.0
         args:
-        - --kubelet-registration-path=/var/lib/kubelet/plugins/csi.hosthath/socket
+        - --kubelet-registration-path=/var/lib/kubelet/plugins/csi.hostpath/socket
         volumeMounts:
         - name: plugin-dir
           mountPath: /run/csi
         - name: registration-dir
           mountPath: /registration
-      - name: hcloud-csi-driver
-        image: ruslansavchuk/rusa-hostpath-csi-node:0.0.1
+      - name: csi-driver-node
+        image: ruslansavchuk/rusa-hostpath-csi-node:0.0.5
         imagePullPolicy: Always
-        command: [/bin/hcloud-csi-driver-node]
         env:
         - name: ConfigurationOptions__UnixSocket
-          value: unix:///run/csi/socket
-        - name: ConfigurationOptions__CsiDataDirectory
+          value: /run/csi/socket
+        - name: ConfigurationOptions__CsiDataDir
           value: /var/lib/csi-data-dir
+        - name: ConfigurationOptions__NodeId
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
         volumeMounts:
         - name: kubelet-dir
           mountPath: /var/lib/kubelet
@@ -70,17 +74,17 @@ spec:
           type: Directory
       - name: plugin-dir
         hostPath:
-          path: /var/lib/kubelet/plugins/csi.hetzner.cloud/
+          path: /var/lib/kubelet/plugins/csi.hostpath/
           type: DirectoryOrCreate
       - name: registration-dir
         hostPath:
           path: /var/lib/kubelet/plugins_registry/
           type: Directory
       # it is the place where csi node will store its data
-      - hostPath:
-            path: /var/lib/csi-hostpath-data/
-            type: DirectoryOrCreate
-          name: csi-data-dir
+      - name: csi-data-dir
+        hostPath:
+          path: /var/lib/csi-hostpath-data/
+          type: DirectoryOrCreate
       - name: device-dir
         hostPath:
           path: /dev

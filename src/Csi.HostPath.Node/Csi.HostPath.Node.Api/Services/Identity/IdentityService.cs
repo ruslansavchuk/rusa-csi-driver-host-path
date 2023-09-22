@@ -14,7 +14,7 @@ public class IdentityService : Csi.V1.Identity.IdentityBase
     {
         return Task.FromResult(new GetPluginInfoResponse
         {
-            Name = "name",
+            Name = "hostpath.csi.k8s.io",
             VendorVersion = "version"
         });
     }

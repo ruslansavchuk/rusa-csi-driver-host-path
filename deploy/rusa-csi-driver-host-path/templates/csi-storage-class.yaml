@@ -6,9 +6,9 @@ metadata:
     {{- include "csi-storage-class-labels" . | nindent 4 }}
   annotations:
     {{- if .Values.setAsDefault }}
-    storageclass.kubernetes.io/is-default-class: true
+    storageclass.kubernetes.io/is-default-class: "true"
     {{- else }}
-    storageclass.kubernetes.io/is-default-class: false
+    storageclass.kubernetes.io/is-default-class: "false"
     {{- end }}
 provisioner: {{ include "csi-name" . }}
 volumeBindingMode: WaitForFirstConsumer

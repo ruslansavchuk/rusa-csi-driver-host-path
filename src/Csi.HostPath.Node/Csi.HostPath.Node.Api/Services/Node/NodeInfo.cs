@@ -9,7 +9,7 @@ public partial class NodeService
     {
         var response = new NodeGetInfoResponse
         {
-            NodeId = "some value here",
+            NodeId = _options.Value.NodeId,
             MaxVolumesPerNode = 1_000_000_000
         };
         

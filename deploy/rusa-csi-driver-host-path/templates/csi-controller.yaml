@@ -38,11 +38,11 @@ spec:
         - name: socket-dir
           mountPath: /run/csi
       - name: host-path-csi
-        image: ruslansavchuk/rusa-hostpath-csi-controller:0.0.1
+        image: ruslansavchuk/rusa-hostpath-csi-controller:0.0.3
         imagePullPolicy: Always
         env:
         - name: ConfigurationOptions__UnixSocket
-          value: unix:///run/csi/socket
+          value: /run/csi/socket
         volumeMounts:
         - name: socket-dir
           mountPath: /run/csi

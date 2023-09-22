@@ -3,7 +3,7 @@ kind: CSIDriver
 metadata:
   name: {{ include "csi-name" . }}
   labels:
-    {{- include "csi-driver" . | nindent 4 }}
+    {{- include "csi-driver-labels" . | nindent 4 }}
 spec:
   # Supports persistent and ephemeral inline volumes.
   volumeLifecycleModes:
@@ -14,7 +14,9 @@ spec:
   podInfoOnMount: true
   # No attacher needed.
   attachRequired: false
-  storageCapacity: true
+  # todo: if i specify this parameter i need to do something with storage capacity
+  # for example 
+  storageCapacity: false
   # Kubernetes may use fsGroup to change permissions and ownership 
   # of the volume to match user requested fsGroup in the pod's SecurityPolicy
   fsGroupPolicy: File

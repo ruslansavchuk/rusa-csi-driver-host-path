@@ -4,8 +4,15 @@ using Csi.HostPath.Node.Api.Services.Identity;
 using Csi.HostPath.Node.Api.Services.Node;
 using Csi.HostPath.Node.Api.Utils;
 using Microsoft.Extensions.Options;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host
+    .UseSerilog((ctx, lc) =>
+    {
+        lc.ReadFrom.Configuration(ctx.Configuration);
+    });
 
 builder.Services
     .Configure<ConfigurationOptions>(builder.Configuration.GetSection(nameof(ConfigurationOptions)));

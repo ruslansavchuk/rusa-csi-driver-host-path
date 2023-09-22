@@ -39,5 +39,10 @@ public class ExceptionInterceptor : Interceptor
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, ex.Message));
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occured during handling of the request");
+            throw;
+        }
     }
 }

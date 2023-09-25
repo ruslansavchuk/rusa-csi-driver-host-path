@@ -46,10 +46,9 @@ jobs:
       - name: Prepare build artifacts
         run: |
           sed -i 's/version: 0.0.1/version: ${{ steps.commit.outputs.short }}/g' ./deploy/rusa-csi-driver-host-path/Chart.yaml
-          tar -zcvf rusa-csi-driver-host-path.tar.gz ./deploy/rusa-csi-driver-host-path
 
       - name: Publish build artifact
         uses: actions/upload-artifact@v3
         with:
           name: rusa-csi-driver-host-path
-          path: rusa-csi-driver-host-path.tar.gz
+          path: ./deploy/rusa-csi-driver-host-path

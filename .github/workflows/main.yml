@@ -46,6 +46,7 @@ jobs:
       - name: Prepare build artifacts
         run: |
           sed -i 's/version: 0.0.1/version: ${{ steps.commit.outputs.short }}/g' ./deploy/rusa-csi-driver-host-path/Chart.yaml
+          sed -i 's/appVersion: 0.0.1/appVersion: ${{ steps.commit.outputs.short }}/g' ./deploy/rusa-csi-driver-host-path/Chart.yaml
 
       - name: Publish build artifact
         uses: actions/upload-artifact@v3

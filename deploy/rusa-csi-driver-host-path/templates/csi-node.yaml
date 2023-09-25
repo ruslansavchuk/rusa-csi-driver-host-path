@@ -43,7 +43,7 @@ spec:
         - name: registration-dir
           mountPath: /registration
       - name: csi-driver-node
-        image: ruslansavchuk/rusa-hostpath-csi-node:0.0.5
+        image: ruslansavchuk/rusa-hostpath-csi-node:{{ $.Chart.Version }}
         imagePullPolicy: Always
         env:
         - name: ConfigurationOptions__UnixSocket

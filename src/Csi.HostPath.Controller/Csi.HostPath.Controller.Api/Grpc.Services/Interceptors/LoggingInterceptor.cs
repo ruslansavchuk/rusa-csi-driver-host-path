@@ -4,7 +4,7 @@ using Serilog;
 
 namespace Csi.HostPath.Controller.Api.Grpc.Services.Interceptors;
 
-public class LoggingInterceptor: Interceptor
+public class LoggingInterceptor : Interceptor
 {
     private readonly ILogger<ExceptionInterceptor> _logger;
     private readonly IDiagnosticContext _diagnosticContext;

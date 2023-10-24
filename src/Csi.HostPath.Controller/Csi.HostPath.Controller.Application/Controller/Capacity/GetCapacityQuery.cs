@@ -25,7 +25,7 @@ public class GetCapacityQueryHandler : IRequestHandler<GetCapacityQuery, Capacit
         var volumes = await _volumeRepository.Get();
         var capacity = _options.Value.Capacity;
         
-        return new Capacity(capacity - volumes.Sum(v => v.Size), 
+        return new Capacity(capacity - volumes.Sum(v => v.Capacity), 
             _options.Value.MaxVolumeSize, 
             _options.Value.MinVolumeSize);
     }

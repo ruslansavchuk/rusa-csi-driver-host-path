@@ -2,7 +2,7 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Csi.HostPath.Controller.Application.Common.Repositories;
-using Csi.HostPath.Controller.Domain.Entities;
+using Csi.HostPath.Controller.Domain.Volumes;
 using Csi.HostPath.Controller.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using Csi.HostPath.Controller.Domain.Entities;
+using Csi.HostPath.Controller.Domain.Volumes;
 
 namespace Csi.HostPath.Controller.Application.Common.Repositories;
 

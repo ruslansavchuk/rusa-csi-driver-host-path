@@ -13,4 +13,12 @@
         <Protobuf Include="..\..\Protos\csi.proto" GrpcServices="Server" Link="Protos\csi.proto" />
         <PackageReference Include="Grpc.AspNetCore" Version="2.55.0" />
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Csi.HostPath.Node.Infrastructure\Csi.HostPath.Node.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Grpc\Services\" />
+    </ItemGroup>
 </Project>

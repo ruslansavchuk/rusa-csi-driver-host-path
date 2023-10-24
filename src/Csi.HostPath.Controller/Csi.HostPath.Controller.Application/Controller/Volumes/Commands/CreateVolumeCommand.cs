@@ -2,8 +2,7 @@
 using Csi.HostPath.Controller.Application.Common.Exceptions;
 using Csi.HostPath.Controller.Application.Common.Repositories;
 using Csi.HostPath.Controller.Application.Controller.Volumes.Validators;
-using Csi.HostPath.Controller.Domain.Entities;
-using Csi.HostPath.Controller.Domain.Enums;
+using Csi.HostPath.Controller.Domain.Volumes;
 using FluentValidation;
 using MediatR;
 
@@ -32,7 +31,7 @@ public class CreateVolumeValidator : AbstractValidator<CreateVolumeCommand>
 public class CreateVolumeRequestHandler : IRequestHandler<CreateVolumeCommand, Volume>
 {
 	private readonly IVolumeRepository _volumeRepository;
-	private const int DefaultVolumeCapacity = 4096;
+	private const long DefaultVolumeCapacity = 4096;
 
 	public CreateVolumeRequestHandler(IVolumeRepository volumeRepository)
 	{
@@ -48,7 +47,7 @@ public class CreateVolumeRequestHandler : IRequestHandler<CreateVolumeCommand, V
 		if (existingVolumes.Count > 0)
 		{
 			var existingVolume = existingVolumes.Single();
-			if (existingVolume.Size < capacity)
+			if (existingVolume.Capacity < capacity)
 			{
 				throw new AlreadyExistsException("Volume with the same name already exists");
 			}
@@ -56,26 +55,9 @@ public class CreateVolumeRequestHandler : IRequestHandler<CreateVolumeCommand, V
 			return existingVolume;
 		}
 
-		var volume = CreateVolumeInternal(request.Name, capacity);
+		var volume = Volume.Create(request.Name, capacity, false, false, AccessType.Mount, null, null, false);
 		await _volumeRepository.Add(volume);
 
 		return volume; 
-	}
-
-	private Volume CreateVolumeInternal(string name, long capacity)
-	{
-		return new Volume
-		{
-			// todo: think how to generate volume id
-			// Id = Guid.NewGuid().ToString(), 
-			Size = capacity,
-			Name = name,
-			Attached = false,
-			Ephemeral = false,
-			AccessType = AccessType.Mount,
-			Path = null,
-			NodeId = null,
-			ReadOnlyAttach = false
-		};
 	}
 }

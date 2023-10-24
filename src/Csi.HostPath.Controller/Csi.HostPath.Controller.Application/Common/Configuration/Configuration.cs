@@ -1,4 +1,5 @@
-﻿using Csi.HostPath.Controller.Domain.Enums;
+﻿using Csi.HostPath.Controller.Domain.Common.Size;
+using Csi.HostPath.Controller.Domain.Volumes;
 
 namespace Csi.HostPath.Controller.Application.Common.Configuration;
 

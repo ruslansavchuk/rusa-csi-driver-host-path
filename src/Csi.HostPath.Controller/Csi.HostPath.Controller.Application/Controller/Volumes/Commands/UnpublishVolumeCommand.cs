@@ -1,6 +1,6 @@
 ﻿using Csi.HostPath.Controller.Application.Common.Exceptions;
 using Csi.HostPath.Controller.Application.Common.Repositories;
-using Csi.HostPath.Controller.Domain.Entities;
+using Csi.HostPath.Controller.Domain.Volumes;
 using FluentValidation;
 using MediatR;
 
@@ -36,7 +36,7 @@ public class UnpublishVolumeCommandHandler : IRequestHandler<UnpublishVolumeComm
                 throw new ServiceLogicException("unable to unpublich volume which is published to different node");
             }
 
-            volume.NodeId = null;
+            volume.SetNode(null);
             await _volumeRepository.Update(volume);
             return volume;
         }

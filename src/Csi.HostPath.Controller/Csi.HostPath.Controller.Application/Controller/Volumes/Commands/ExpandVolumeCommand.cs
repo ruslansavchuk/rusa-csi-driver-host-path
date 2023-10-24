@@ -1,6 +1,5 @@
 ﻿using Csi.HostPath.Controller.Application.Common.Dto;
-using Csi.HostPath.Controller.Domain.Entities;
-using Csi.HostPath.Controller.Domain.Enums;
+using Csi.HostPath.Controller.Domain.Volumes;
 using MediatR;
 
 namespace Csi.HostPath.Controller.Application.Controller.Volumes.Commands;

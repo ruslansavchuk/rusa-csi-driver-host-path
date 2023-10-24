@@ -38,7 +38,7 @@ spec:
         - name: socket-dir
           mountPath: /run/csi
       - name: host-path-csi
-        image: ruslansavchuk/rusa-hostpath-csi-controller:0.0.3
+        image: ruslansavchuk/rusa-hostpath-csi-controller:{{ $.Chart.Version }}
         imagePullPolicy: Always
         env:
         - name: ConfigurationOptions__UnixSocket

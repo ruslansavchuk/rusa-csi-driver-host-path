@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Csi.HostPath.Controller.Application.Common.Repositories;
-using Csi.HostPath.Controller.Domain.Entities;
+using Csi.HostPath.Controller.Domain.Volumes;
 using FluentValidation;
 using MediatR;
 

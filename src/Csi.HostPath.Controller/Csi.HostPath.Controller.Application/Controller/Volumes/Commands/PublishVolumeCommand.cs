@@ -1,8 +1,7 @@
 ﻿using System.Security;
 using Csi.HostPath.Controller.Application.Common.Exceptions;
 using Csi.HostPath.Controller.Application.Common.Repositories;
-using Csi.HostPath.Controller.Domain.Entities;
-using Csi.HostPath.Controller.Domain.Enums;
+using Csi.HostPath.Controller.Domain.Volumes;
 using FluentValidation;
 using MediatR;
 
@@ -43,7 +42,7 @@ public class PublishVolumeCommandHandler : IRequestHandler<PublishVolumeCommand,
                 throw new ServiceLogicException("unable to publish volume to different node");
             }
 
-            volume.NodeId = request.NodeId;
+            volume.SetNode(request.NodeId);
 
             if (request.AccessType != volume.AccessType)
             {

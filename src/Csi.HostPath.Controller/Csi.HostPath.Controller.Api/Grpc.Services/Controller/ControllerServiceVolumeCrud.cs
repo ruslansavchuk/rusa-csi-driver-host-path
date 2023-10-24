@@ -1,9 +1,10 @@
 ﻿using Csi.HostPath.Controller.Application.Common.Dto;
 using Csi.HostPath.Controller.Application.Controller.Volumes.Commands;
 using Csi.HostPath.Controller.Application.Controller.Volumes.Queries;
-using Csi.HostPath.Controller.Domain.Enums;
+using Csi.HostPath.Controller.Domain.Volumes;
 using Csi.V1;
 using Grpc.Core;
+using Volume = Csi.V1.Volume;
 
 namespace Csi.HostPath.Controller.Api.Grpc.Services.Controller;
 
@@ -44,12 +45,12 @@ public partial class ControllerService
             _ => throw new ArgumentOutOfRangeException()
         };
 
-    private Volume ToVolumeDto(Domain.Entities.Volume volume)
+    private Volume ToVolumeDto(Csi.HostPath.Controller.Domain.Volumes.Volume volume)
     {
         return new Volume
         {
             VolumeId = volume.Id.ToString(),
-            CapacityBytes = volume.Size
+            CapacityBytes = volume.Capacity
         };
     }
 
@@ -109,7 +110,7 @@ public partial class ControllerService
         return ToGetVolumeResponse(result);
     }
 
-    private ControllerGetVolumeResponse ToGetVolumeResponse(Domain.Entities.Volume volume)
+    private ControllerGetVolumeResponse ToGetVolumeResponse(Csi.HostPath.Controller.Domain.Volumes.Volume volume)
     {
         var status = new ControllerGetVolumeResponse.Types.VolumeStatus();
         if (!string.IsNullOrWhiteSpace(volume.NodeId))
@@ -138,7 +139,7 @@ public partial class ControllerService
         return new ControllerExpandVolumeResponse
         {
             NodeExpansionRequired = expansionRequired,
-            CapacityBytes = expandedVolume.Size
+            CapacityBytes = expandedVolume.Capacity
         };
     }
 

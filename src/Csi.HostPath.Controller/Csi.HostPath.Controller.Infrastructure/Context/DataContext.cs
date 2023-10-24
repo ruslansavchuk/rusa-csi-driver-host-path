@@ -1,4 +1,4 @@
-﻿using Csi.HostPath.Controller.Domain.Entities;
+﻿using Csi.HostPath.Controller.Domain.Volumes;
 using Microsoft.EntityFrameworkCore;
 
 namespace Csi.HostPath.Controller.Infrastructure.Context;

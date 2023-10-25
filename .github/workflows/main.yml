@@ -48,7 +48,7 @@ jobs:
           push: true
           build-args: |
             BUILD_VERSION=${{ steps.versioning.outputs.value }}
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rusa-hostpath-csi-node:${{ steps.commit.outputs.short }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rusa-hostpath-csi-node:${{ steps.versioning.outputs.value }}
 
       - name: Build and push Controller images
         uses: docker/build-push-action@v5
@@ -58,7 +58,7 @@ jobs:
           push: true
           build-args: |
             BUILD_VERSION=${{ steps.versioning.outputs.value }}
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rusa-hostpath-csi-controller:${{ steps.commit.outputs.short }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rusa-hostpath-csi-controller:${{ steps.versioning.outputs.value }}
 
       - name: Prepare build artifacts
         run: |

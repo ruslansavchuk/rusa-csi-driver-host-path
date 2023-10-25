@@ -11,10 +11,11 @@ COPY Csi.HostPath.Node Csi.HostPath.Node
 COPY Protos Protos
 
 FROM build AS publish
-ARG version="1.0.0.2"
-RUN dotnet publish "Csi.HostPath.Node/Csi.HostPath.Node.Api/Csi.HostPath.Node.Api.csproj" -c Release  -p:Version=$version -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Csi.HostPath.Node/Csi.HostPath.Node.Api/Csi.HostPath.Node.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ARG BUILD_VERSION=0.0.1
+ENV CSI_DRIVER_VERSION=$BUILD_VERSION
 ENTRYPOINT ["dotnet", "Csi.HostPath.Node.Api.dll"]

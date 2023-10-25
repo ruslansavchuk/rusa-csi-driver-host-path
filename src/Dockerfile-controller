@@ -12,10 +12,11 @@ COPY Csi.HostPath.Controller Csi.HostPath.Controller
 COPY Protos Protos
 
 FROM build AS publish
-ARG version="1.0.0.2"
-RUN dotnet publish "Csi.HostPath.Controller/Csi.HostPath.Controller.Api/Csi.HostPath.Controller.Api.csproj" -c Release -p:Version=$version -o /app/publish
+RUN dotnet publish "Csi.HostPath.Controller/Csi.HostPath.Controller.Api/Csi.HostPath.Controller.Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ARG BUILD_VERSION=0.0.1
+ENV CSI_DRIVER_VERSION=$BUILD_VERSION
 ENTRYPOINT ["dotnet", "Csi.HostPath.Controller.Api.dll"]

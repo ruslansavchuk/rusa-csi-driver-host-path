@@ -10,8 +10,8 @@ public class GetPluginInfoQueryHandler : IRequestHandler<GetPluginInfoQuery, Plu
 {
     public Task<PluginInfo> Handle(GetPluginInfoQuery request, CancellationToken cancellationToken)
     {
-        var currentAssemblyVersion = typeof(GetPluginInfoQuery).Assembly.GetName().Version!.ToString();
+        var version = Environment.GetEnvironmentVariable("CSI_DRIVER_VERSION");
         const string driverName = "hostpath.csi.k8s.io";
-        return Task.FromResult(new PluginInfo(driverName, currentAssemblyVersion));
+        return Task.FromResult(new PluginInfo(driverName, version));
     }
 }

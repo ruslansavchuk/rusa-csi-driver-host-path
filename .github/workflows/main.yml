@@ -7,6 +7,8 @@ on:
       - "main"
       - "develop"
       - "feature/*"
+    tags:
+      - "*"
 
 jobs:
   build:
@@ -18,6 +20,16 @@ jobs:
       - id: commit
         name: Get commit info
         uses: prompt/actions-commit-hash@v3
+
+      - name: Set build version
+        id: versioning
+        run: |
+          if [[ -n "$GITHUB_REF" && "$GITHUB_REF" == refs/tags/* ]]; then
+            BUILD_VERSION="${GITHUB_REF#refs/tags/}"
+          else
+            BUILD_VERSION="${{ steps.commit.outputs.short }}"
+          fi
+          echo "value=$BUILD_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -34,7 +46,9 @@ jobs:
           context: ./src/
           file: ./src/Dockerfile-node
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rusa-hostpath-csi-node:${{ steps.commit.outputs.short }}
+          build-args: |
+            BUILD_VERSION=${{ steps.versioning.outputs.value }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rusa-hostpath-csi-node:${{ steps.versioning.outputs.value }}
 
       - name: Build and push Controller images
         uses: docker/build-push-action@v5
@@ -42,7 +56,9 @@ jobs:
           context: ./src/
           file: ./src/Dockerfile-node
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rusa-hostpath-csi-controller:${{ steps.commit.outputs.short }}
+          build-args: |
+            BUILD_VERSION=${{ steps.versioning.outputs.value }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rusa-hostpath-csi-controller:${{ steps.versioning.outputs.value }}
 
       - name: Prepare build artifacts
         run: |

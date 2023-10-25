@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Csi.HostPath.Controller.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230912143604_Init")]
-    partial class Init
+    [Migration("20231025134940_InitDatabase")]
+    partial class InitDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,7 +19,7 @@ namespace Csi.HostPath.Controller.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.10");
 
-            modelBuilder.Entity("Csi.HostPath.Controller.Domain.Entities.Volume", b =>
+            modelBuilder.Entity("Csi.HostPath.Controller.Infrastructure.Context.Models.VolumeDataModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -29,6 +29,9 @@ namespace Csi.HostPath.Controller.Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("Attached")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("Capacity")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("Ephemeral")
@@ -45,9 +48,6 @@ namespace Csi.HostPath.Controller.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("ReadOnlyAttach")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("Size")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

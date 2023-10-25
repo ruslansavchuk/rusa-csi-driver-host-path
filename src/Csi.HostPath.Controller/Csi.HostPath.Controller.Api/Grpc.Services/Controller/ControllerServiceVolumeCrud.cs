@@ -1,8 +1,10 @@
-﻿using Csi.HostPath.Controller.Application.Common.Dto;
+﻿using System.Reflection.Metadata.Ecma335;
+using Csi.HostPath.Controller.Application.Common.Dto;
 using Csi.HostPath.Controller.Application.Controller.Volumes.Commands;
 using Csi.HostPath.Controller.Application.Controller.Volumes.Queries;
 using Csi.HostPath.Controller.Domain.Volumes;
 using Csi.V1;
+using Google.Protobuf.Collections;
 using Grpc.Core;
 using Volume = Csi.V1.Volume;
 
@@ -13,7 +15,7 @@ public partial class ControllerService
     public override async Task<CreateVolumeResponse> CreateVolume(CreateVolumeRequest request, ServerCallContext context)
     {
         var command = ToCommand(request);
-        var createdVolume = await _mediator.Send(command, context.CancellationToken);
+        var createdVolume = await _sender.Send(command, context.CancellationToken);
         
         return new CreateVolumeResponse
         {
@@ -57,7 +59,7 @@ public partial class ControllerService
     public override async Task<DeleteVolumeResponse> DeleteVolume(DeleteVolumeRequest request, ServerCallContext context)
     {
         var command = new DeleteVolumeCommand(ToVolumeId(request.VolumeId));
-        await _mediator.Send(command, context.CancellationToken);
+        await _sender.Send(command, context.CancellationToken);
         return new DeleteVolumeResponse();
     }
 
@@ -70,7 +72,7 @@ public partial class ControllerService
     public override async Task<ListVolumesResponse> ListVolumes(ListVolumesRequest request, ServerCallContext context)
     {
         var query = new ListVolumesQuery(request.StartingToken, request.MaxEntries);
-        var result = await _mediator.Send(query, context.CancellationToken);
+        var result = await _sender.Send(query, context.CancellationToken);
         return ToResponse(result);
     }
 
@@ -81,23 +83,27 @@ public partial class ControllerService
             NextToken = result.NextToken.ToString()
         };
 
-        response.Entries.AddRange(result.Volumes.Select(i => new ListVolumesResponse.Types.Entry
+        response.Entries.AddRange(result.Volumes.Select(i =>
         {
-            Volume = ToVolumeDto(i),
-            Status = new ListVolumesResponse.Types.VolumeStatus
+            var volume = new ListVolumesResponse.Types.Entry
             {
-                // check if it is the same as in get volume
-                VolumeCondition = new VolumeCondition
+                Volume = ToVolumeDto(i),
+                Status = new ListVolumesResponse.Types.VolumeStatus
                 {
-                    Abnormal = false,
-                    
-                },
-                // need to do something with published node ids
-                PublishedNodeIds =
-                {
-                    Capacity = 0,
-                },
+                    // check if it is the same as in get volume
+                    VolumeCondition = new VolumeCondition
+                    {
+                        Abnormal = false,
+                    }
+                }
+            };
+
+            if (!string.IsNullOrWhiteSpace(i.NodeId))
+            {
+                volume.Status.PublishedNodeIds.Add(i.NodeId);    
             }
+
+            return volume;
         }));
 
         return response;
@@ -105,8 +111,8 @@ public partial class ControllerService
 
     public override async Task<ControllerGetVolumeResponse> ControllerGetVolume(ControllerGetVolumeRequest request, ServerCallContext context)
     {
-        var query = new GetVolumeQuery(request.VolumeId);
-        var result = await _mediator.Send(query, context.CancellationToken);
+        var query = new GetVolumeQuery(ToVolumeId(request.VolumeId));
+        var result = await _sender.Send(query, context.CancellationToken);
         return ToGetVolumeResponse(result);
     }
 
@@ -125,17 +131,15 @@ public partial class ControllerService
         };
     }
 
-    public override async Task<ControllerModifyVolumeResponse> ControllerModifyVolume(ControllerModifyVolumeRequest request, ServerCallContext context)
+    public override Task<ControllerModifyVolumeResponse> ControllerModifyVolume(ControllerModifyVolumeRequest request, ServerCallContext context)
     {
-        var query = new UpdateVolumeCommand();
-        await _mediator.Send(query, context.CancellationToken);
-        return new ControllerModifyVolumeResponse();
+        throw new NotImplementedException();
     }
 
     public override async Task<ControllerExpandVolumeResponse> ControllerExpandVolume(ControllerExpandVolumeRequest request, ServerCallContext context)
     {
         var query = ToCommand(request);
-        var (expandedVolume, expansionRequired) = await _mediator.Send(query, context.CancellationToken);
+        var (expandedVolume, expansionRequired) = await _sender.Send(query, context.CancellationToken);
         return new ControllerExpandVolumeResponse
         {
             NodeExpansionRequired = expansionRequired,

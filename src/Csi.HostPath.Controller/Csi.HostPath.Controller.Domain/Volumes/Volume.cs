@@ -14,13 +14,14 @@ public class Volume : EntityBase
     public bool ReadOnlyAttach { get; private set; }
     public bool Attached { get; private set; }
 
-    private Volume(string name, Size? capacity, bool attached, bool ephemeral, AccessType accessType,
+    private Volume(int id, string name, Size? capacity, bool attached, bool ephemeral, AccessType accessType,
         string? path, string? nodeId, bool readOnlyAttach)
     {
+        Id = id;
         Name = name ?? throw new ArgumentException("name is required", nameof(name));
         Capacity = capacity != null && capacity > 0
             ? capacity
-            : throw new ArgumentException("size should be bigger than 0", nameof(capacity));
+            : throw new ArgumentException("capacity should be bigger than 0", nameof(capacity));
         AccessType = accessType == AccessType.Mount
             ? accessType
             : throw new Exceptions.ArgumentException("only access type mount supported", nameof(accessType));
@@ -36,15 +37,35 @@ public class Volume : EntityBase
         NodeId = nodeId;
     }
 
+    public void SetId(int id)
+    {
+        if (Id > 0)
+        {
+            throw new Exceptions.ArgumentException("unable to update Id", "");
+        }
+
+        Id = id;
+    }
+
+    public void SetCapacity(Size capacity)
+    {
+        if (capacity < 0)
+        {
+            throw new ArgumentException("capacity should be bigger than 0", nameof(capacity));
+        }
+
+        Capacity = capacity;
+    }
+
     public static Volume Create(string name, Size? capacity, bool attached, bool ephemeral, AccessType accessType, 
         string? path, string? nodeId, bool readOnlyAttach)
     {
-        return new Volume(name, capacity, attached, ephemeral, accessType, path, nodeId, readOnlyAttach);
+        return new Volume(0, name, capacity, attached, ephemeral, accessType, path, nodeId, readOnlyAttach);
     }
 
-    public static Volume Restore(string name, Size? capacity, bool attached, bool ephemeral, AccessType accessType,
+    public static Volume Restore(int id, string name, Size? capacity, bool attached, bool ephemeral, AccessType accessType,
         string? path, string? nodeId, bool readOnlyAttach)
     {
-        return new Volume(name, capacity, attached, ephemeral, accessType, path, nodeId, readOnlyAttach);
+        return new Volume(id, name, capacity, attached, ephemeral, accessType, path, nodeId, readOnlyAttach);
     }
 }

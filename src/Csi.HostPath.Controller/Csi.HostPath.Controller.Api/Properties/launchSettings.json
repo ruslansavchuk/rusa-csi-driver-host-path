@@ -3,10 +3,10 @@
     "http": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5000",
+      "applicationUrl": "http://localhost:6000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ConfigurationOptions__UnixSocket": "/tmp/foo.sock",
+        "ConfigurationOptions__UnixSocket": "",
         "ConfigurationOptions__DbPath": "./",
         "VERSION": "0.0.1-dev"
       }

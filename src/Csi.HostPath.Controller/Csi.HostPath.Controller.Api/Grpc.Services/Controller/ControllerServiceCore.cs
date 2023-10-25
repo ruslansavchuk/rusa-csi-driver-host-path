@@ -6,15 +6,15 @@ public partial class ControllerService : Csi.V1.Controller.ControllerBase
 {
     #region Fields
     
-    private readonly IMediator _mediator;
+    private readonly ISender _sender;
     
     #endregion
 
     #region Constructors
     
-    public ControllerService(IMediator mediator)
+    public ControllerService(IMediator sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
     
     #endregion

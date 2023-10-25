@@ -1,9 +1,7 @@
-﻿using System.Linq.Expressions;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Csi.HostPath.Controller.Application.Common.Repositories;
+﻿using Csi.HostPath.Controller.Application.Common.Repositories;
 using Csi.HostPath.Controller.Domain.Volumes;
 using Csi.HostPath.Controller.Infrastructure.Context;
+using Csi.HostPath.Controller.Infrastructure.Context.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Csi.HostPath.Controller.Infrastructure.Repositories;
@@ -19,35 +17,71 @@ public class VolumeRepository : IVolumeRepository
 
     public async Task Add(Volume volume)
     {
-        await _dataContext.Volumes.AddAsync(volume);
-        await _dataContext.SaveChangesAsync();
-    }
-
-    public Task<Volume> Get(int id)
-    {
-        return GetInternal(id);
-    }
-
-    public Task<List<Volume>> Get(Expression<Func<Volume, bool>>? filter = null)
-    {
-        var volumes = _dataContext
-            .Volumes
-            .AsQueryable();
-
-        if (filter != null)
+        var newVolume = new VolumeDataModel
         {
-            volumes = volumes.Where(filter);
+            Name = volume.Name,
+            Capacity = volume.Capacity,
+            Ephemeral = volume.Ephemeral,
+            Path = volume.Path,
+            AccessType = volume.AccessType,
+            NodeId = volume.NodeId,
+            ReadOnlyAttach = volume.ReadOnlyAttach,
+            Attached = volume.Attached
+        };
+        await _dataContext.Volumes.AddAsync(newVolume);
+        await _dataContext.SaveChangesAsync();
+
+        volume.SetId(newVolume.Id);
+    }
+
+    public async Task<Volume> Get(int id)
+    {
+        var volume = await GetInternal(id);
+        return Volume.Restore(
+            volume.Id,
+            volume.Name, 
+            volume.Capacity, 
+            volume.Attached, 
+            volume.Ephemeral, 
+            volume.AccessType, 
+            volume.Path, 
+            volume.NodeId,
+            volume.ReadOnlyAttach);
+    }
+
+    public async Task<List<Volume>> Get(string? name = null, int? getAfterId = null)
+    {
+        var query = _dataContext.Volumes.AsQueryable();
+
+        if (getAfterId.HasValue)
+        {
+            query = query.Where(v => v.Id > getAfterId);
         }
 
-        return volumes.ToListAsync();
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            query = query.Where(v => v.Name == name);
+        }
+
+        var volumes = await query.ToListAsync();
+
+        return volumes
+            .Select(v => Volume.Restore(v.Id, v.Name, v.Capacity, v.Attached, v.Ephemeral, v.AccessType, v.Path, v.NodeId, v.ReadOnlyAttach))
+            .ToList();
     }
 
     public async Task Update(Volume volume)
     {
         var existingVolume = await GetInternal(volume.Id);
 
-        // todo: think what to do with updates
-        // existingVolume.Attached = volume.Attached;
+        existingVolume.Attached = volume.Attached;
+        existingVolume.Capacity = volume.Capacity;
+        existingVolume.Ephemeral = volume.Ephemeral;
+        existingVolume.AccessType = volume.AccessType;
+        existingVolume.ReadOnlyAttach = volume.ReadOnlyAttach;
+        existingVolume.Name = volume.Name;
+        existingVolume.Path = volume.Path;
+        existingVolume.NodeId = volume.NodeId;
         
         _dataContext.Volumes.Update(existingVolume);
         await _dataContext.SaveChangesAsync();
@@ -60,7 +94,7 @@ public class VolumeRepository : IVolumeRepository
         await _dataContext.SaveChangesAsync();
     }
 
-    private Task<Volume> GetInternal(int id)
+    private Task<VolumeDataModel> GetInternal(int id)
     {
         return _dataContext.Volumes.SingleAsync(i => i.Id == id);
     }

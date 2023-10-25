@@ -8,7 +8,7 @@ public partial class ControllerService
 {
     public override async Task<ControllerGetCapabilitiesResponse> ControllerGetCapabilities(ControllerGetCapabilitiesRequest request, ServerCallContext context)
     {
-        var capabilities = await _mediator.Send(new GetCapabilitiesQuery());
+        var capabilities = await _sender.Send(new GetCapabilitiesQuery());
         return ToResponse(capabilities);
     }
 

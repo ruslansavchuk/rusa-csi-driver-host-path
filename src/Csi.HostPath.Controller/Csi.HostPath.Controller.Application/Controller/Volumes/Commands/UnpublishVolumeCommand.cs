@@ -36,6 +36,8 @@ public class UnpublishVolumeCommandHandler : IRequestHandler<UnpublishVolumeComm
                 throw new ServiceLogicException("unable to unpublich volume which is published to different node");
             }
 
+            // we need to track that this volume has bee published on specific node
+            // in case if someone decide to publish volume to different node we need to throw an error
             volume.SetNode(null);
             await _volumeRepository.Update(volume);
             return volume;

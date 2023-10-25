@@ -9,7 +9,7 @@ public partial class ControllerService
     public override async Task<ControllerPublishVolumeResponse> ControllerPublishVolume(ControllerPublishVolumeRequest request, ServerCallContext context)
     {
         var command = ToCommand(request);
-        var volume = await _mediator.Send(command, context.CancellationToken);
+        var volume = await _sender.Send(command, context.CancellationToken);
         return new ControllerPublishVolumeResponse();
     }
     
@@ -22,7 +22,7 @@ public partial class ControllerService
     public override async Task<ControllerUnpublishVolumeResponse> ControllerUnpublishVolume(ControllerUnpublishVolumeRequest request, ServerCallContext context)
     {
         var command = new UnpublishVolumeCommand(ToVolumeId(request.VolumeId), request.NodeId);
-        var volume = await _mediator.Send(command, context.CancellationToken);
+        var volume = await _sender.Send(command, context.CancellationToken);
         return new ControllerUnpublishVolumeResponse();
     }
 }

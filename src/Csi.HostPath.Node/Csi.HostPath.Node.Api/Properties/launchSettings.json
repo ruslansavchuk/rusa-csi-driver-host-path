@@ -4,11 +4,11 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:5001",
+      "applicationUrl": "http://localhost:6001",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ConfigurationOptions__UnixSocket": "",
-        "ConfigurationOptions__CsiDataDirectory": "/tmp/csi-data",
+        "ConfigurationOptions__CsiDataDirectory": "./",
         "VERSION": "0.0.1-dev"
       }
     }

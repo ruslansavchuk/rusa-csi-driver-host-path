@@ -12,7 +12,7 @@ COPY Protos Protos
 
 FROM build AS publish
 ARG BUILD_VERSION=0.0.1
-ENV VERSION=$BUILD_VERSION
+ENV CSI_DRIVER_VERSION=$BUILD_VERSION
 RUN dotnet publish "Csi.HostPath.Node/Csi.HostPath.Node.Api/Csi.HostPath.Node.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final

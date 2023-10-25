@@ -8,7 +8,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ConfigurationOptions__UnixSocket": "",
-        "ConfigurationOptions__CsiDataDirectory": "/tmp/csi-data"
+        "ConfigurationOptions__CsiDataDirectory": "/tmp/csi-data",
+        "VERSION": "0.0.1-dev"
       }
     }
   }

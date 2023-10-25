@@ -7,7 +7,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ConfigurationOptions__UnixSocket": "/tmp/foo.sock",
-        "ConfigurationOptions__DbPath": "./"
+        "ConfigurationOptions__DbPath": "./",
+        "VERSION": "0.0.1-dev"
       }
     }
   }

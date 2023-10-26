@@ -6,17 +6,9 @@ public static class Extensions
 {
     public static IServiceCollection RegisterApplication(this IServiceCollection services)
     {
-        var currentAssembly = typeof(Extensions).Assembly;
-
-        services
-            // do i really need fluent validation here????
-            // .AddValidatorsFromAssembly(currentAssembly)
-            .AddMediatR(cfg =>
+        return services.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssembly(currentAssembly);
-                // cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+                cfg.RegisterServicesFromAssembly(typeof(Extensions).Assembly);
             });
-
-        return services;
     }
 }

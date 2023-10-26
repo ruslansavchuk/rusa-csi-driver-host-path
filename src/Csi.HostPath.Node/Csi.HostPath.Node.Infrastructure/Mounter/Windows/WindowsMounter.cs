@@ -4,7 +4,7 @@ namespace Csi.HostPath.Node.Infrastructure.Mounter.Windows;
 
 public class WindowsMounter : IMounter
 {
-    public void Mount(string source, string target, string[] options)
+    public void Mount(string source, string target, bool readOnly = false)
     {
         // do nothing, it is just a mock
     }

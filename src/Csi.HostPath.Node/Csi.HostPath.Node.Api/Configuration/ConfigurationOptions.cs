@@ -1,8 +1,11 @@
-﻿namespace Csi.HostPath.Node.Api.Configuration;
+﻿using Csi.HostPath.Node.Application.Common.Configuration;
 
-public class ConfigurationOptions
+namespace Csi.HostPath.Node.Api.Configuration;
+
+public class ConfigurationOptions : INodeConfiguration
 {
     public string UnixSocket { get; set; }
     public string CsiDataDir { get; set; }
     public string NodeId { get; set; }
+    public int? MaxVolumesPerNode { get; }
 }

@@ -7,10 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.ConfigureLogging();
 builder.ConfigureWebHost();
 
+builder.Services.Configure<string>(builder.Configuration.GetSection(""));
+
 builder.Services
     .RegisterApplication()
     .RegisterInfrastructure()
-    .RegisterServices();
+    .RegisterServices()
+    .Configure();
 
 var app = builder.Build();
 

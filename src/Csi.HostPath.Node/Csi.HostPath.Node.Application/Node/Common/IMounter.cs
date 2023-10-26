@@ -2,6 +2,6 @@
 
 public interface IMounter
 {
-    void Mount(string source, string target, string[] options);
+    void Mount(string source, string target, bool readOnly = false);
     void Unmount(string targetPath);
 }

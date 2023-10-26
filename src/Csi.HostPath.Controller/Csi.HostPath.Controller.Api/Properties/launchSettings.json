@@ -8,7 +8,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ConfigurationOptions__UnixSocket": "",
         "ConfigurationOptions__DbPath": "./",
-        "VERSION": "0.0.1-dev"
+        "CSI_DRIVER_VERSION": "0.0.1-dev"
       }
     }
   }

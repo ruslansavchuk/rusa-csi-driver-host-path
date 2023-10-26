@@ -9,15 +9,16 @@ public record GetNodeInfoQuery : IRequest<NodeInfo>;
 
 public record GetNodeInfoQueryHandler : IRequestHandler<GetNodeInfoQuery, NodeInfo>
 {
-    private readonly Configuration _configuration;
+    private readonly INodeConfiguration _configuration;
 
-    public GetNodeInfoQueryHandler()
+    public GetNodeInfoQueryHandler(INodeConfiguration configuration)
     {
-        _configuration = null;
+        _configuration = configuration;
     }
 
     public Task<NodeInfo> Handle(GetNodeInfoQuery request, CancellationToken cancellationToken)
     {
-        return Task.FromResult(new NodeInfo(_configuration.NodeId, _configuration.MaxVolumesPerNode));
+        // default value for max volume per node is 100
+        return Task.FromResult(new NodeInfo(_configuration.NodeId, _configuration.MaxVolumesPerNode ?? 100));
     }
 }

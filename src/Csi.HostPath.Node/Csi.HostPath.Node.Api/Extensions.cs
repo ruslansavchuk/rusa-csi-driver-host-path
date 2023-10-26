@@ -1,6 +1,7 @@
 ﻿using Csi.HostPath.Node.Api.Configuration;
 using Csi.HostPath.Node.Api.Grpc.Interceptors;
 using Csi.HostPath.Node.Api.Grpc.Services.Identity;
+using Csi.HostPath.Node.Application.Common.Configuration;
 using Microsoft.Extensions.Options;
 using Serilog;
 using NodeService = Csi.HostPath.Node.Api.Grpc.Services.Node.NodeService;
@@ -33,7 +34,7 @@ public static class Extensions
         }
     }
 
-    public static void RegisterServices(this IServiceCollection services)
+    public static IServiceCollection RegisterServices(this IServiceCollection services)
     {
         services.AddGrpc(options =>
         {
@@ -43,11 +44,21 @@ public static class Extensions
         
         services.AddScoped<IdentityService>();
         services.AddScoped<NodeService>();
+
+        return services;
     }
 
     public static void MapServices(this IEndpointRouteBuilder builder)
     {
         builder.MapGrpcService<IdentityService>();
         builder.MapGrpcService<NodeService>();
+    }
+
+    public static IServiceCollection Configure(this IServiceCollection services)
+    {
+        services.AddScoped<INodeConfiguration, ConfigurationOptions>(provider => 
+            provider.GetRequiredService<IOptionsMonitor<ConfigurationOptions>>().CurrentValue);
+        
+        return services;
     }
 }

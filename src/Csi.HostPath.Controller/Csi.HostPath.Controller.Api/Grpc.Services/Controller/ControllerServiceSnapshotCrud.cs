@@ -7,17 +7,20 @@ public partial class ControllerService
 {
     public override Task<CreateSnapshotResponse> CreateSnapshot(CreateSnapshotRequest request, ServerCallContext context)
     {
-        return base.CreateSnapshot(request, context);
+        throw new NotImplementedException();
+        // return base.CreateSnapshot(request, context);
     }
 
     public override Task<DeleteSnapshotResponse> DeleteSnapshot(DeleteSnapshotRequest request, ServerCallContext context)
     {
-        return base.DeleteSnapshot(request, context);
+        throw new NotImplementedException();
+        // return base.DeleteSnapshot(request, context);
     }
 
     public override Task<ListSnapshotsResponse> ListSnapshots(ListSnapshotsRequest request, ServerCallContext context)
     {
-        return base.ListSnapshots(request, context);
+        throw new NotImplementedException();
+        // return base.ListSnapshots(request, context);
     }
     
 }

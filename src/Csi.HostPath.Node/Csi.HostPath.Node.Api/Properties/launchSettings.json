@@ -3,13 +3,14 @@
     "http": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "applicationUrl": "http://localhost:5001",
+      "applicationUrl": "http://localhost:6001",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ConfigurationOptions__UnixSocket": "",
-        "ConfigurationOptions__CsiDataDirectory": "/tmp/csi-data",
-        "VERSION": "0.0.1-dev"
+        "ConfigurationOptions__CsiDataDir": "./",
+        "ConfigurationOptions__NodeId": "dev",
+        "ConfigurationOptions__MaxVolumesPerNode": "5",
+        "CSI_DRIVER_VERSION": "0.0.1-dev"
       }
     }
   }

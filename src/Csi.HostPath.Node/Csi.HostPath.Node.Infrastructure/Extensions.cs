@@ -10,6 +10,8 @@ public static class Extensions
 {
     public static IServiceCollection RegisterInfrastructure(this IServiceCollection services)
     {
+        services.AddSingleton<IDirectoryManager, DirectoriesManager>();
+        
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
             services.AddSingleton<IMounter, LinuxMounter>();

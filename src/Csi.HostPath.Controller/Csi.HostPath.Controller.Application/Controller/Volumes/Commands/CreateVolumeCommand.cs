@@ -43,7 +43,7 @@ public class CreateVolumeRequestHandler : IRequestHandler<CreateVolumeCommand, V
 		var requestedCapacity = request.Capacity?.Required ?? 0; 
 		var capacity = requestedCapacity > 0 ? requestedCapacity : DefaultVolumeCapacity;
 
-		var existingVolumes = await _volumeRepository.Get(v => v.Name == request.Name);
+		var existingVolumes = await _volumeRepository.Get(name: request.Name);
 		if (existingVolumes.Count > 0)
 		{
 			var existingVolume = existingVolumes.Single();

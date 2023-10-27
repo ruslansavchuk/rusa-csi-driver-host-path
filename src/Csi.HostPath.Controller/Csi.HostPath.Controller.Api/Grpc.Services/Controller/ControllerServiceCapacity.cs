@@ -8,7 +8,7 @@ public partial class ControllerService
 {
     public override async Task<GetCapacityResponse> GetCapacity(GetCapacityRequest request, ServerCallContext context)
     {
-        var capacity = await _mediator.Send(new GetCapacityQuery());
+        var capacity = await _sender.Send(new GetCapacityQuery());
         
         return new GetCapacityResponse
         {

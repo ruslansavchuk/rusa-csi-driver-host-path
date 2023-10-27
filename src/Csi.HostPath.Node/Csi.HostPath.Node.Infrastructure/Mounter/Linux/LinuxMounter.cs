@@ -7,9 +7,16 @@ public class LinuxMounter : IMounter
     private const string MountUtil = "mount";
     private const string UnmountUtil = "umount";
 
-    public void Mount(string source, string target, string[] options)
+    public void Mount(string source, string target, bool readOnly = false)
     {
-        var commandOptions = BuildMoundOptions(source, target, options);
+        var options = new List<string> {"--bind"};
+
+        if (readOnly)
+        {
+            options.AddRange(new []{"-o", "ro"});
+        }
+
+        var commandOptions = BuildMoundOptions(source, target, options.ToArray());
         var mountCommand = new Command(MountUtil, commandOptions);
         var (_, stdError, status) = mountCommand.Exec();
         if (status > 0)

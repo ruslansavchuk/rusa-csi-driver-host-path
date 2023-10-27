@@ -31,11 +31,11 @@ public class ListVolumesRequestHandler : IRequestHandler<ListVolumesQuery, ListV
 
     public async Task<ListVolumesQueryResult> Handle(ListVolumesQuery request, CancellationToken cancellationToken)
     {
-        Expression<Func<Volume, bool>>? filter = request.Token != null 
-            ? v => true //v.Id > request.Token 
-            : null;
+        var getAfterId = int.TryParse(request.Token, out var parsedToken)
+            ? parsedToken
+            : default;
         
-        var volumes = await _volumeRepository.Get(filter);
+        var volumes = await _volumeRepository.Get(getAfterId: getAfterId);
         var items = volumes.OrderBy(v => v.Id).AsEnumerable();
 
         if (!string.IsNullOrEmpty(request.Token) && int.TryParse(request.Token, out var idFilter))

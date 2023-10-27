@@ -3,4 +3,6 @@
 public interface IDirectoryManager
 {
     void EnsureExists(string path);
+    long GetUsedBytes(string path);
+    HashSet<string> GetSubFolders(string path);
 }

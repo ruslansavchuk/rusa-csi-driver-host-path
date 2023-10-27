@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Csi.HostPath.Node.Application.Node.Publish;
 
-public record PublishVolumeCommand(string VolumeId, string TargetPath, bool ReadOnly) : IRequest;
+public record PublishVolumeCommand(int VolumeId, string TargetPath, bool ReadOnly, Dictionary<string, string> Context) : IRequest;
 
 public class PublishVolumeCommandHandler : IRequestHandler<PublishVolumeCommand>
 {
@@ -24,7 +24,8 @@ public class PublishVolumeCommandHandler : IRequestHandler<PublishVolumeCommand>
 
     public Task Handle(PublishVolumeCommand request, CancellationToken cancellationToken)
     {
-        var volumeDataDir = Path.Combine(_nodeConfiguration.CsiDataDir, request.VolumeId);
+        var volumeDir = $"volume_id-{request.VolumeId}_{string.Join("_", request.Context.Select(kvp => $"{kvp.Key}-{kvp.Value}"))}";
+        var volumeDataDir = Path.Combine(_nodeConfiguration.CsiDataDir, volumeDir);
         _directoryManager.EnsureExists(volumeDataDir);
         _mounter.Mount(volumeDataDir, request.TargetPath, request.ReadOnly);
         

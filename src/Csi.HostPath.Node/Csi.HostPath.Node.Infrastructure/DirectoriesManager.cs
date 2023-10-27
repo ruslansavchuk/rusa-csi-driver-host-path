@@ -11,4 +11,17 @@ public class DirectoriesManager : IDirectoryManager
             Directory.CreateDirectory(path);
         }
     }
+
+    public long GetUsedBytes(string path)
+    {
+        return Directory.GetFiles(path, "*", SearchOption.AllDirectories)
+            .Select(filePath => new FileInfo(filePath))
+            .Select(fileInfo => fileInfo.Length)
+            .Sum();
+    }
+
+    public HashSet<string> GetSubFolders(string path)
+    {
+        return Directory.GetDirectories(path).ToHashSet();
+    }
 }

@@ -4,4 +4,8 @@ public record Size(long Bytes)
 {
     public static implicit operator long(Size  size) => size.Bytes;
     public static implicit operator Size(long bytes) => new(bytes);
+    public override string ToString()
+    {
+        return Bytes.ToString();
+    }
 }

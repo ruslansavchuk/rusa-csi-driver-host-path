@@ -2,7 +2,7 @@
 
 namespace Csi.HostPath.Node.Application.Node.Publish;
 
-public record UnpublishVolumeCommand(string VolumeId, string TargetPath) : IRequest;
+public record UnpublishVolumeCommand(int VolumeId, string TargetPath) : IRequest;
 
 public class UnpublishVolumeCommandHandler : IRequestHandler<UnpublishVolumeCommand>
 {

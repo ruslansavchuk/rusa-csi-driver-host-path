@@ -49,11 +49,18 @@ public partial class ControllerService
 
     private Volume ToVolumeDto(Csi.HostPath.Controller.Domain.Volumes.Volume volume)
     {
-        return new Volume
+        var volumeModel =new Volume
         {
             VolumeId = volume.Id.ToString(),
             CapacityBytes = volume.Capacity
         };
+
+        foreach (var kvp in volume.Context)
+        {
+            volumeModel.VolumeContext.Add(kvp.Key, kvp.Value);
+        }
+            
+        return volumeModel;
     }
 
     public override async Task<DeleteVolumeResponse> DeleteVolume(DeleteVolumeRequest request, ServerCallContext context)

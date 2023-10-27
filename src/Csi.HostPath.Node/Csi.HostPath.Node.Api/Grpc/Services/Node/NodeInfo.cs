@@ -17,7 +17,7 @@ public partial class NodeService
         return new NodeGetInfoResponse
         {
             NodeId = nodeInfo.Id,
-            MaxVolumesPerNode = nodeInfo.MaxVolumesPerNode
+            MaxVolumesPerNode = nodeInfo.MaxVolumesPerNode,
         };
     }
 }

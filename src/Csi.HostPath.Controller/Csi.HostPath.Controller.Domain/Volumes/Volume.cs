@@ -14,6 +14,11 @@ public class Volume : EntityBase
     public bool ReadOnlyAttach { get; private set; }
     public bool Attached { get; private set; }
 
+    public Dictionary<string, string> Context => new()
+    {
+        {"capacity-bytes", Capacity.ToString() }
+    };
+
     private Volume(int id, string name, Size? capacity, bool attached, bool ephemeral, AccessType accessType,
         string? path, string? nodeId, bool readOnlyAttach)
     {

@@ -54,7 +54,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./src/
-          file: ./src/Dockerfile-node
+          file: ./src/Dockerfile-controller
           push: true
           build-args: |
             BUILD_VERSION=${{ steps.versioning.outputs.value }}

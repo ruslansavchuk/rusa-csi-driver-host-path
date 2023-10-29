@@ -24,8 +24,11 @@ public class ExceptionInterceptor  : Interceptor
         }
         catch (Exception ex)
         {
-            using var requestDataExt = LogContext.PushProperty("RequestData", request);
-            _logger.LogError(ex, "Error occured during handling of the request");
+            using (LogContext.PushProperty("RequestData", request))
+            {
+                _logger.LogError(ex, "Error occured during handling of the request");    
+            }
+            
             throw;
         }
     }

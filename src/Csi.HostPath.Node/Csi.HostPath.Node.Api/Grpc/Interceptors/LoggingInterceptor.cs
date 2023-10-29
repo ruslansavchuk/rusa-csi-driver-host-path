@@ -20,10 +20,12 @@ public class LoggingInterceptor : Interceptor
         UnaryServerMethod<TRequest, TResponse> continuation)
     {
         var response = await continuation(request, context);
-        
-        using var requestDataExt = LogContext.PushProperty("RequestData", request);
-        using var responseDataExt = LogContext.PushProperty("ResponseData", response);
-        _logger.LogInformation("Request executed");
+
+        using (LogContext.PushProperty("RequestData", request))
+        using (LogContext.PushProperty("ResponseData", response))
+        {
+            _logger.LogInformation("Request executed");    
+        }
         
         return response;
     }

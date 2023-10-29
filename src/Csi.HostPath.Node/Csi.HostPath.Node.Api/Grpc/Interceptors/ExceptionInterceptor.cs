@@ -1,5 +1,6 @@
 ﻿using Grpc.Core;
 using Grpc.Core.Interceptors;
+using Serilog.Context;
 
 namespace Csi.HostPath.Node.Api.Grpc.Interceptors;
 
@@ -23,6 +24,7 @@ public class ExceptionInterceptor  : Interceptor
         }
         catch (Exception ex)
         {
+            using var requestDataExt = LogContext.PushProperty("RequestData", request);
             _logger.LogError(ex, "Error occured during handling of the request");
             throw;
         }

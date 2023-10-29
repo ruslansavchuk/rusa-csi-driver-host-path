@@ -27,6 +27,9 @@ public class PublishVolumeCommandHandler : IRequestHandler<PublishVolumeCommand>
         var volumeDir = $"volume_id-{request.VolumeId}_{string.Join("_", request.Context.Select(kvp => $"{kvp.Key}-{kvp.Value}"))}";
         var volumeDataDir = Path.Combine(_nodeConfiguration.CsiDataDir, volumeDir);
         _directoryManager.EnsureExists(volumeDataDir);
+        
+        // csi specification says that we need to create target dir
+        _directoryManager.EnsureExists(request.TargetPath);
         _mounter.Mount(volumeDataDir, request.TargetPath, request.ReadOnly);
         
         return Task.CompletedTask;

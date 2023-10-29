@@ -1,20 +1,16 @@
 ﻿using Grpc.Core;
 using Grpc.Core.Interceptors;
-using Serilog;
+using Serilog.Context;
 
 namespace Csi.HostPath.Controller.Api.Grpc.Services.Interceptors;
 
 public class LoggingInterceptor : Interceptor
 {
     private readonly ILogger<ExceptionInterceptor> _logger;
-    private readonly IDiagnosticContext _diagnosticContext;
 
-    public LoggingInterceptor(
-        ILogger<ExceptionInterceptor> logger, 
-        IDiagnosticContext diagnosticContext)
+    public LoggingInterceptor(ILogger<ExceptionInterceptor> logger)
     {
         _logger = logger;
-        _diagnosticContext = diagnosticContext;
     }
 
     public override async Task<TResponse> UnaryServerHandler<TRequest, TResponse>(
@@ -22,16 +18,12 @@ public class LoggingInterceptor : Interceptor
         ServerCallContext context,
         UnaryServerMethod<TRequest, TResponse> continuation)
     {
-         _diagnosticContext.Set("RequestData", request);
-        try
-        {
-            var response = await continuation(request, context);
-            _diagnosticContext.Set("ResponseData", response);
-            return response;
-        }
-        finally
-        {
-            _logger.LogInformation("Request executed");
-        }
+        var response = await continuation(request, context);
+        
+        using var requestDataExt = LogContext.PushProperty("RequestData", request);
+        using var responseDataExt = LogContext.PushProperty("ResponseData", response);       
+        _logger.LogInformation("Request executed");
+        
+        return response;
     }
 }

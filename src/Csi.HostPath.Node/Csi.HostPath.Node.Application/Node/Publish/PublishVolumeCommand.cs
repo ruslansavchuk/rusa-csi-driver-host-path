@@ -24,7 +24,8 @@ public class PublishVolumeCommandHandler : IRequestHandler<PublishVolumeCommand>
 
     public Task Handle(PublishVolumeCommand request, CancellationToken cancellationToken)
     {
-        var volumeDir = $"volume_id-{request.VolumeId}_{string.Join("_", request.Context.Select(kvp => $"{kvp.Key}-{kvp.Value}"))}";
+        const string capacityBytesKey = "capacity-bytes"; 
+        var volumeDir = $"volume_id-{request.VolumeId}_{capacityBytesKey}-{request.Context[capacityBytesKey]}";
         var volumeDataDir = Path.Combine(_nodeConfiguration.CsiDataDir, volumeDir);
         _directoryManager.EnsureExists(volumeDataDir);
         

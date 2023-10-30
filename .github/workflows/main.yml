@@ -11,8 +11,10 @@ on:
       - "*"
 
 jobs:
-  build:
+  versioning:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.versioning.outputs.value }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,9 +29,44 @@ jobs:
           if [[ -n "$GITHUB_REF" && "$GITHUB_REF" == refs/tags/* ]]; then
             BUILD_VERSION="${GITHUB_REF#refs/tags/}"
           else
-            BUILD_VERSION="${{ steps.commit.outputs.short }}"
+            BUILD_VERSION="v0.0.0-${{ steps.commit.outputs.short }}"
           fi
           echo "value=$BUILD_VERSION" >> "$GITHUB_OUTPUT"
+
+  build-controller:
+    runs-on: ubuntu-latest
+    needs:
+      - versioning
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Controller images
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src/
+          file: ./src/Dockerfile-controller
+          push: true
+          build-args: |
+            BUILD_VERSION=${{ needs.versioning.outputs.version }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rusa-hostpath-csi-controller:${{ needs.versioning.outputs.version }}
+
+  build-node:
+    runs-on: ubuntu-latest
+    needs:
+      - versioning
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -47,23 +84,24 @@ jobs:
           file: ./src/Dockerfile-node
           push: true
           build-args: |
-            BUILD_VERSION=${{ steps.versioning.outputs.value }}
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rusa-hostpath-csi-node:${{ steps.versioning.outputs.value }}
+            BUILD_VERSION=${{ needs.versioning.outputs.version }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rusa-hostpath-csi-node:${{ needs.versioning.outputs.version }}
 
-      - name: Build and push Controller images
-        uses: docker/build-push-action@v5
-        with:
-          context: ./src/
-          file: ./src/Dockerfile-node
-          push: true
-          build-args: |
-            BUILD_VERSION=${{ steps.versioning.outputs.value }}
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rusa-hostpath-csi-controller:${{ steps.versioning.outputs.value }}
+  publish-build-artifacts:
+    runs-on: ubuntu-latest
+    needs:
+      - versioning
+      - build-node
+      - build-controller
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Prepare build artifacts
         run: |
-          sed -i 's/version: 0.0.1/version: ${{ steps.commit.outputs.short }}/g' ./deploy/rusa-csi-driver-host-path/Chart.yaml
-          sed -i 's/appVersion: 0.0.1/appVersion: ${{ steps.commit.outputs.short }}/g' ./deploy/rusa-csi-driver-host-path/Chart.yaml
+          sed -i 's/version: 0.0.1/version: ${{ needs.versioning.outputs.version }}/g' ./deploy/rusa-csi-driver-host-path/Chart.yaml
+          sed -i 's/appVersion: 0.0.1/appVersion: ${{ needs.versioning.outputs.version }}/g' ./deploy/rusa-csi-driver-host-path/Chart.yaml
 
       - name: Publish build artifact
         uses: actions/upload-artifact@v3

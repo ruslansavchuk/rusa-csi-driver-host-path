@@ -2,6 +2,7 @@
 using FluentValidation;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
+using Serilog.Context;
 
 namespace Csi.HostPath.Controller.Api.Grpc.Services.Interceptors;
 
@@ -23,26 +24,28 @@ public class ExceptionInterceptor : Interceptor
         {
             return await continuation(request, context);
         }
-        catch (AlreadyExistsException ex)
-        {
-            throw new RpcException(new Status(StatusCode.AlreadyExists, ex.Message));
-        }
-        catch (NotFoundException ex)
-        {
-            throw new RpcException(new Status(StatusCode.NotFound, ex.Message));
-        }
-        catch (ServiceLogicException ex)
-        {
-            throw new RpcException(new Status(StatusCode.Unknown, ex.Message));
-        }
-        catch (ValidationException ex)
-        {
-            throw new RpcException(new Status(StatusCode.InvalidArgument, ex.Message));
-        }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occured during handling of the request");
-            throw;
+            using (LogContext.PushProperty("RequestData", request))
+            {
+                _logger.LogError(ex, "Error occured during handling of the request");   
+            }
+            
+            StatusCode? statusCode = ex switch
+            {
+                AlreadyExistsException => StatusCode.AlreadyExists,
+                NotFoundException => StatusCode.NotFound,
+                ServiceLogicException=> StatusCode.Unknown,
+                ValidationException => StatusCode.InvalidArgument,
+                _ => null
+            };
+
+            if (statusCode is null)
+            {
+                throw;
+            }
+
+            throw new RpcException(new Status(statusCode.Value, ex.Message));
         }
     }
 }

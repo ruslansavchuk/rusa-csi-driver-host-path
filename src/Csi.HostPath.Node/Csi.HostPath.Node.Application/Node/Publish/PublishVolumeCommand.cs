@@ -13,8 +13,8 @@ public class PublishVolumeCommandHandler : IRequestHandler<PublishVolumeCommand>
     private readonly INodeConfiguration _nodeConfiguration;
 
     public PublishVolumeCommandHandler(
-        IMounter mounter, 
-        IDirectoryManager directoryManager, 
+        IMounter mounter,
+        IDirectoryManager directoryManager,
         INodeConfiguration nodeConfiguration)
     {
         _mounter = mounter;
@@ -24,11 +24,15 @@ public class PublishVolumeCommandHandler : IRequestHandler<PublishVolumeCommand>
 
     public Task Handle(PublishVolumeCommand request, CancellationToken cancellationToken)
     {
-        var volumeDir = $"volume_id-{request.VolumeId}_{string.Join("_", request.Context.Select(kvp => $"{kvp.Key}-{kvp.Value}"))}";
+        const string capacityBytesKey = "capacity-bytes";
+        var volumeDir = $"volume_id-{request.VolumeId}_{capacityBytesKey}-{request.Context[capacityBytesKey]}";
         var volumeDataDir = Path.Combine(_nodeConfiguration.CsiDataDir, volumeDir);
         _directoryManager.EnsureExists(volumeDataDir);
+
+        // csi specification says that we need to create target dir
+        _directoryManager.EnsureExists(request.TargetPath);
         _mounter.Mount(volumeDataDir, request.TargetPath, request.ReadOnly);
-        
+
         return Task.CompletedTask;
     }
 }

@@ -12,6 +12,7 @@ public static class Extensions
         services.AddGrpc(options =>
         {
             options.Interceptors.Add<ExceptionInterceptor>();
+            options.Interceptors.Add<LoggingInterceptor>();
         });
         
         services.AddScoped<IdentityService>();

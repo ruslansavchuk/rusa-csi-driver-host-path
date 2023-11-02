@@ -4,7 +4,12 @@ using MediatR;
 
 namespace Csi.HostPath.Node.Application.Node.Publish;
 
-public record PublishVolumeCommand(int VolumeId, string TargetPath, bool ReadOnly, Dictionary<string, string> Context) : IRequest;
+public record PublishVolumeCommand(
+    int VolumeId, 
+    string TargetPath, 
+    string StagePath, 
+    bool ReadOnly, 
+    Dictionary<string, string> Context) : IRequest;
 
 public class PublishVolumeCommandHandler : IRequestHandler<PublishVolumeCommand>
 {
@@ -24,14 +29,13 @@ public class PublishVolumeCommandHandler : IRequestHandler<PublishVolumeCommand>
 
     public Task Handle(PublishVolumeCommand request, CancellationToken cancellationToken)
     {
-        const string capacityBytesKey = "capacity-bytes";
-        var volumeDir = $"volume_id-{request.VolumeId}_{capacityBytesKey}-{request.Context[capacityBytesKey]}";
-        var volumeDataDir = Path.Combine(_nodeConfiguration.CsiDataDir, volumeDir);
-        _directoryManager.EnsureExists(volumeDataDir);
-
+        // pay attention that for ephemeral volumes kubernetes will provide empty stage path 
+        // also for ephemeral volumes kubernetes do not call create volume and stage volume commands
+        // it means that we need to handle it in somehow
+        
         // csi specification says that we need to create target dir
         _directoryManager.EnsureExists(request.TargetPath);
-        _mounter.Mount(volumeDataDir, request.TargetPath, request.ReadOnly);
+        _mounter.Mount(request.StagePath, request.TargetPath, request.ReadOnly);
 
         return Task.CompletedTask;
     }

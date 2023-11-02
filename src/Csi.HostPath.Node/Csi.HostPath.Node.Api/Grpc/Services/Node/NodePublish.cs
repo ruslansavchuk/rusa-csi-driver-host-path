@@ -11,6 +11,7 @@ public partial class NodeService
         var command = new PublishVolumeCommand(
             ToVolumeId(request.VolumeId), 
             request.TargetPath, 
+            request.StagingTargetPath,
             request.Readonly, 
             request.VolumeContext
                 .ToDictionary(

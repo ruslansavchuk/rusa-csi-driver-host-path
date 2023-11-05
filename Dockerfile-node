@@ -1,0 +1,21 @@
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /build
+COPY ["src/Csi.HostPath.Node/Csi.HostPath.Node.Api/Csi.HostPath.Node.Api.csproj", "src/Csi.HostPath.Node/Csi.HostPath.Node.Api/"]
+RUN dotnet restore "src/Csi.HostPath.Node/Csi.HostPath.Node.Api/Csi.HostPath.Node.Api.csproj"
+COPY src/Csi.HostPath.Node src/Csi.HostPath.Node
+COPY protos protos
+
+FROM build AS publish
+RUN dotnet publish "src/Csi.HostPath.Node/Csi.HostPath.Node.Api/Csi.HostPath.Node.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ARG BUILD_VERSION=0.0.1
+ENV CSI_DRIVER_VERSION=$BUILD_VERSION
+ENTRYPOINT ["dotnet", "Csi.HostPath.Node.Api.dll"]

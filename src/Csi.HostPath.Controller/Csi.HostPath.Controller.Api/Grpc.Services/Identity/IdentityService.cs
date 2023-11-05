@@ -16,7 +16,7 @@ public class IdentityService : V1.Identity.IdentityBase
 
     public override Task<ProbeResponse> Probe(ProbeRequest request, ServerCallContext context)
     {
-        return Task.FromResult(new ProbeResponse());
+        return Task.FromResult(new ProbeResponse { Ready = true });
     }
 
     public override async Task<GetPluginInfoResponse> GetPluginInfo(GetPluginInfoRequest request, ServerCallContext context)

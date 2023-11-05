@@ -100,7 +100,19 @@ jobs:
 
       - name: Execute API tests
         timeout-minutes: 5
-        run: docker compose -f docker-compose-controller-api-tests.yaml up --build --abort-on-container-exit || exit 0
+        run: |
+          docker compose -f docker-compose-controller-api-tests.yaml up --build --abort-on-container-exit || exit 0
+          docker run -d --rm --name dummy -v test-results:/tr alpine tail -f /dev/null
+          docker cp dummy:/tr/testresults.trx testresults.trx
+          docker stop dummy
+          docker compose -f docker-compose-controller-api-tests.yaml rm -fsv
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
+        if: always()
+        with:
+          files: |
+            **/*.trx
 
   publish-build-artifacts:
     runs-on: ubuntu-latest

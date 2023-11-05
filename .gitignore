@@ -16,4 +16,4 @@ Desktop.ini
 .DS_Store
 
 # do not need to commit csi sanity tests
-tests/**
+tests/csi-test-5.0.0/**

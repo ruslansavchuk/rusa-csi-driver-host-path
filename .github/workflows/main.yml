@@ -53,8 +53,8 @@ jobs:
       - name: Build and push Controller images
         uses: docker/build-push-action@v5
         with:
-          context: ./src/
-          file: ./src/Dockerfile-controller
+          context: ./
+          file: ./Dockerfile-controller
           push: true
           build-args: |
             BUILD_VERSION=${{ needs.versioning.outputs.version }}
@@ -80,8 +80,8 @@ jobs:
       - name: Build and push Node images
         uses: docker/build-push-action@v5
         with:
-          context: ./src/
-          file: ./src/Dockerfile-node
+          context: ./
+          file: ./Dockerfile-node
           push: true
           build-args: |
             BUILD_VERSION=${{ needs.versioning.outputs.version }}

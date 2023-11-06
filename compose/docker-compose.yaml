@@ -3,12 +3,14 @@ version: "3.7"
 services:
   controller:
     build:
-      context: ./../src
+      context: ./../
       dockerfile: Dockerfile-controller
     restart: on-failure
     environment:
-    - ConfigurationOptions__UnixSocket=/sockets/controller.sock
+    # - ConfigurationOptions__UnixSocket=/sockets/controller.sock
     - ConfigurationOptions__DbPath=/etc/csi-controller/data
+    ports:
+    - 6000:80
     volumes:
        - /tmp/sockets/controller:/sockets
        - /tmp/data:/etc/csi-controller/data
@@ -17,12 +19,14 @@ services:
 
   node:
     build:
-      context: ./../src
+      context: ./../
       dockerfile: Dockerfile-node
     restart: on-failure
     environment:
-    - ConfigurationOptions__UnixSocket=/sockets/node.sock
+    # - ConfigurationOptions__UnixSocket=/sockets/node.sock
     - ConfigurationOptions__CsiDataDirectory=/tmp/csi-data
+    ports:
+    - 6001:80
     volumes:
        - /tmp/sockets/node:/sockets
        - /tmp/csi-data-dir:/tmp/csi-data-dir

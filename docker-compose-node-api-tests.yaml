@@ -1,0 +1,32 @@
+version: "3.7"
+
+services:
+  driver:
+    build:
+      context:  ./
+      dockerfile: Dockerfile-node
+    networks:
+    - node-tests
+    volumes:
+    - csi-data:/tmp/csi-data-dir
+
+  tests:
+    build:
+      context: ./
+      dockerfile: Dockerfile-node-tests
+    depends_on:
+    - driver
+    volumes:
+    - test-results:/test-results
+    environment:
+    - CONNECTION_STRING=http://driver
+    networks:
+    - node-tests
+
+volumes:
+  csi-data:
+  test-results:
+    name: test-results
+
+networks:
+  node-tests:

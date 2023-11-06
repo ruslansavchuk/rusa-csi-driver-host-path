@@ -1,0 +1,8 @@
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS base
+WORKDIR /source
+VOLUME /test-results
+
+COPY ./tests/Csi.HostPath.Node.Tests ./tests/Csi.HostPath.Node.Tests/
+COPY ./protos ./protos
+RUN dotnet restore "tests/Csi.HostPath.Node.Tests/Csi.HostPath.Node.Tests.csproj"
+CMD ["dotnet", "test", "tests/Csi.HostPath.Node.Tests/Csi.HostPath.Node.Tests.csproj", "--no-restore", "--results-directory", "/test-results", "--logger", "trx;LogFileName=testresults.trx"]

@@ -6,6 +6,8 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /build
 COPY ["src/Csi.HostPath.Node/Csi.HostPath.Node.Api/Csi.HostPath.Node.Api.csproj", "src/Csi.HostPath.Node/Csi.HostPath.Node.Api/"]
+COPY ["src/Csi.HostPath.Node/Csi.HostPath.Node.Application/Csi.HostPath.Node.Application.csproj", "src/Csi.HostPath.Node/Csi.HostPath.Node.Application/Csi.HostPath.Node.Application.csproj"]
+COPY ["src/Csi.HostPath.Node/Csi.HostPath.Node.Infrastructure/Csi.HostPath.Node.Infrastructure.csproj", "src/Csi.HostPath.Node/Csi.HostPath.Node.Infrastructure/Csi.HostPath.Node.Infrastructure.csproj"]
 RUN dotnet restore "src/Csi.HostPath.Node/Csi.HostPath.Node.Api/Csi.HostPath.Node.Api.csproj"
 COPY src/Csi.HostPath.Node src/Csi.HostPath.Node
 COPY protos protos

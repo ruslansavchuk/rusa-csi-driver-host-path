@@ -12,6 +12,6 @@ public class GetPluginInfoQueryHandler : IRequestHandler<GetPluginInfoQuery, Plu
     {
         var version = Environment.GetEnvironmentVariable("CSI_DRIVER_VERSION");
         const string driverName = "hostpath.csi.k8s.io";
-        return Task.FromResult(new PluginInfo(driverName, version));
+        return Task.FromResult(new PluginInfo(driverName, version!));
     }
 }

@@ -24,7 +24,7 @@ public class CreateVolumeValidator : AbstractValidator<CreateVolumeCommand>
 	    RuleFor(r => r.Capacity).SetValidator(new CapacityRangeValidator()!);
 	    RuleFor(r => r.AccessType)
 		    .NotNull()
-		    .IsInEnum();
+		    .Equal(AccessType.Mount);
     }
 }
 

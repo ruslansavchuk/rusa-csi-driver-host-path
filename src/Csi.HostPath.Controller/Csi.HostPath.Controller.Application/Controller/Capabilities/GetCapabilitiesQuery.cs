@@ -23,7 +23,7 @@ public class GetCapabilitiesRequestHandler : IRequestHandler<GetCapabilitiesQuer
             Capability.PublishUnpublishVolume,
             Capability.ListVolumes,
             Capability.GetCapacity,
-            Capability.ExpandVolume            
+            Capability.ExpandVolume
         });
     }
 }

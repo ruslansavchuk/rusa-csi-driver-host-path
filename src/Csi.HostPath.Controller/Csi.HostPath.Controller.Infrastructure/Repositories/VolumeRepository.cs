@@ -23,7 +23,7 @@ public class VolumeRepository : IVolumeRepository
             Capacity = volume.Capacity,
             Ephemeral = volume.Ephemeral,
             Path = volume.Path,
-            AccessType = volume.AccessType,
+            AccessMode = volume.AccessMode,
             NodeId = volume.NodeId,
             ReadOnlyAttach = volume.ReadOnlyAttach,
             Attached = volume.Attached
@@ -39,12 +39,12 @@ public class VolumeRepository : IVolumeRepository
         var volume = await GetInternal(id);
         return Volume.Restore(
             volume.Id,
-            volume.Name, 
-            volume.Capacity, 
-            volume.Attached, 
-            volume.Ephemeral, 
-            volume.AccessType, 
-            volume.Path, 
+            volume.Name,
+            volume.Capacity,
+            volume.Attached,
+            volume.Ephemeral,
+            volume.AccessMode,
+            volume.Path,
             volume.NodeId,
             volume.ReadOnlyAttach);
     }
@@ -66,7 +66,7 @@ public class VolumeRepository : IVolumeRepository
         var volumes = await query.ToListAsync();
 
         return volumes
-            .Select(v => Volume.Restore(v.Id, v.Name, v.Capacity, v.Attached, v.Ephemeral, v.AccessType, v.Path, v.NodeId, v.ReadOnlyAttach))
+            .Select(v => Volume.Restore(v.Id, v.Name, v.Capacity, v.Attached, v.Ephemeral, v.AccessMode, v.Path, v.NodeId, v.ReadOnlyAttach))
             .ToList();
     }
 
@@ -77,7 +77,7 @@ public class VolumeRepository : IVolumeRepository
         existingVolume.Attached = volume.Attached;
         existingVolume.Capacity = volume.Capacity;
         existingVolume.Ephemeral = volume.Ephemeral;
-        existingVolume.AccessType = volume.AccessType;
+        existingVolume.AccessMode = volume.AccessMode;
         existingVolume.ReadOnlyAttach = volume.ReadOnlyAttach;
         existingVolume.Name = volume.Name;
         existingVolume.Path = volume.Path;

@@ -1,4 +1,5 @@
 ﻿using Csi.HostPath.Controller.Application.Controller.Volumes.Commands;
+using Csi.HostPath.Controller.Domain.Volumes;
 using Csi.V1;
 using Grpc.Core;
 
@@ -15,8 +16,8 @@ public partial class ControllerService
     
     private PublishVolumeCommand ToCommand(ControllerPublishVolumeRequest request)
     {
-        var accessType = ToAccessType(request.VolumeCapability);
-        return new PublishVolumeCommand(ToVolumeId(request.VolumeId), request.NodeId, accessType);
+        var capability = ToCapability(request.VolumeCapability);
+        return new PublishVolumeCommand(ToVolumeId(request.VolumeId), request.NodeId, capability);
     }
 
     public override async Task<ControllerUnpublishVolumeResponse> ControllerUnpublishVolume(ControllerUnpublishVolumeRequest request, ServerCallContext context)

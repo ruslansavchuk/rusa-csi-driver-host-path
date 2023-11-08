@@ -11,20 +11,24 @@ namespace Csi.HostPath.Controller.Application.Controller.Volumes.Commands;
 public record CreateVolumeCommand(
 	string Name, 
 	CapacityRangeDto? Capacity,
-	AccessType? AccessType)
+	List<AccessMode?>? AccessModes)
 	: IRequest<Volume>;
 
 public class CreateVolumeValidator : AbstractValidator<CreateVolumeCommand>
 {
-    public CreateVolumeValidator()
+    public CreateVolumeValidator(CapacityRangeValidator capacityRangeValidator)
     {
 	    RuleFor(r => r.Name)
 		    .NotEmpty()
 		    .MaximumLength(128);
-	    RuleFor(r => r.Capacity).SetValidator(new CapacityRangeValidator()!);
-	    RuleFor(r => r.AccessType)
+	    RuleFor(r => r.Capacity).SetValidator(capacityRangeValidator!);
+	    
+	    RuleFor(r => r.AccessModes)
 		    .NotNull()
-		    .Equal(AccessType.Mount);
+		    .NotEmpty()
+		    .ForEach(cr => cr
+			    .NotNull()
+			    .IsInEnum());
     }
 }
 
@@ -47,7 +51,7 @@ public class CreateVolumeRequestHandler : IRequestHandler<CreateVolumeCommand, V
 		if (existingVolumes.Count > 0)
 		{
 			var existingVolume = existingVolumes.Single();
-			if (existingVolume.Capacity < capacity)
+			if (existingVolume.Capacity != capacity)
 			{
 				throw new AlreadyExistsException("Volume with the same name already exists");
 			}
@@ -55,7 +59,7 @@ public class CreateVolumeRequestHandler : IRequestHandler<CreateVolumeCommand, V
 			return existingVolume;
 		}
 
-		var volume = Volume.Create(request.Name, capacity, false, false, AccessType.Mount, null, null, false);
+		var volume = Volume.Create(request.Name, capacity, false, false, request.AccessModes!.Single(), null, null, false);
 		await _volumeRepository.Add(volume);
 
 		return volume; 

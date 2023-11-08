@@ -13,7 +13,7 @@ spec:
   # "csi.storage.k8s.io/ephemeral" entry are needed.
   podInfoOnMount: true
   # No attacher needed.
-  attachRequired: false
+  attachRequired: true
   # todo: if i specify this parameter i need to do something with storage capacity
   # for example 
   storageCapacity: false

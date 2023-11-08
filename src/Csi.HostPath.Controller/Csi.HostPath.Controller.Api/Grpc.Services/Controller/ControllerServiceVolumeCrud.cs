@@ -5,6 +5,7 @@ using Csi.HostPath.Controller.Domain.Volumes;
 using Csi.V1;
 using Grpc.Core;
 using Volume = Csi.V1.Volume;
+using VolumeCapability = Csi.V1.VolumeCapability;
 
 namespace Csi.HostPath.Controller.Api.Grpc.Services.Controller;
 
@@ -23,24 +24,24 @@ public partial class ControllerService
 
     private CreateVolumeCommand ToCommand(CreateVolumeRequest request)
     {
-        var accessType = request.VolumeCapabilities
-            .Select(ToAccessType)
-            .SingleOrDefault();
+        var capabilities = request.VolumeCapabilities
+            .Select(ToCapability)
+            .ToList();
         
         var command = new CreateVolumeCommand(request.Name,
             new CapacityRangeDto(
                 request.CapacityRange?.LimitBytes, 
                 request.CapacityRange?.RequiredBytes),
-            accessType);
+            capabilities);
 
         return command;
     }
 
-    private AccessType? ToAccessType(VolumeCapability capability) => 
+    private static AccessMode? ToCapability(VolumeCapability capability) => 
         capability.AccessTypeCase switch
         {
-            VolumeCapability.AccessTypeOneofCase.Block => AccessType.Block,
-            VolumeCapability.AccessTypeOneofCase.Mount => AccessType.Mount,
+            VolumeCapability.AccessTypeOneofCase.Block => null,
+            VolumeCapability.AccessTypeOneofCase.Mount => (AccessMode?)capability.AccessMode?.Mode,
             VolumeCapability.AccessTypeOneofCase.None => null,
             _ => throw new ArgumentOutOfRangeException()
         };
@@ -159,6 +160,6 @@ public partial class ControllerService
             new CapacityRangeDto(
                 request.CapacityRange.LimitBytes, 
                 request.CapacityRange.RequiredBytes),
-            ToAccessType(request.VolumeCapability));
+            ToCapability(request.VolumeCapability));
     }
 }

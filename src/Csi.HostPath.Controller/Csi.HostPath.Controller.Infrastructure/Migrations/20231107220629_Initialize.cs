@@ -5,7 +5,7 @@
 namespace Csi.HostPath.Controller.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDatabase : Migration
+    public partial class Initialize : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,7 +19,7 @@ namespace Csi.HostPath.Controller.Infrastructure.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Capacity = table.Column<long>(type: "INTEGER", nullable: false),
                     Path = table.Column<string>(type: "TEXT", nullable: true),
-                    AccessType = table.Column<int>(type: "INTEGER", nullable: false),
+                    AccessMode = table.Column<int>(type: "INTEGER", nullable: false),
                     Ephemeral = table.Column<bool>(type: "INTEGER", nullable: false),
                     NodeId = table.Column<string>(type: "TEXT", nullable: true),
                     ReadOnlyAttach = table.Column<bool>(type: "INTEGER", nullable: false),

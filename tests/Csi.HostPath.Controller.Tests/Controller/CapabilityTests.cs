@@ -6,10 +6,10 @@ namespace Csi.HostPath.Controller.Tests.Controller;
 public class CapabilityTests : ControllerTestsBase
 {
     [Fact]
-    public async Task GetControllerCapabilities()
+    public void GetControllerCapabilities()
     {
         var request = new ControllerGetCapabilitiesRequest();
-        var response = await Client.ControllerGetCapabilitiesAsync(request);
+        var response = GetCapabilities(request);
 
         var capabilities = response.Capabilities.Select(c => c.Rpc.Type);
 

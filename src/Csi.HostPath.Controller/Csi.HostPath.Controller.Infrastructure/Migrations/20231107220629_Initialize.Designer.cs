@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Csi.HostPath.Controller.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231025134940_InitDatabase")]
-    partial class InitDatabase
+    [Migration("20231107220629_Initialize")]
+    partial class Initialize
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace Csi.HostPath.Controller.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AccessType")
+                    b.Property<int>("AccessMode")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("Attached")

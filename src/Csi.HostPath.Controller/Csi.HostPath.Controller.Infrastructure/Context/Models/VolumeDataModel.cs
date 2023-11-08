@@ -10,7 +10,7 @@ public class VolumeDataModel
     public string Name { get; set; }
     public long Capacity { get; set; }
     public string? Path { get; set; }
-    public AccessType AccessType { get; set; }
+    public AccessMode AccessMode { get; set; }
     public bool Ephemeral { get; set; }
     public string? NodeId { get; set; }
     public bool ReadOnlyAttach { get; set; }

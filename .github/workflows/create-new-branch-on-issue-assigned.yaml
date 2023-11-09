@@ -1,0 +1,33 @@
+name: create-new-branch-on-issue-assigned
+
+on:
+  issues:
+    types:
+      - assigned
+
+jobs:
+  create-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Git
+        run: |
+          git config user.email "${{ secrets.GITHUB_ACTOR }}@users.noreply.github.com"
+          git config user.name "${{ secrets.GITHUB_ACTOR }}"
+
+      - name: Check if Branch Exists
+        run: |
+          BRANCH_NAME="feature/${{ github.event.issue.number }}"
+          if git rev-parse --verify "$BRANCH_NAME"; then
+            echo "Branch $BRANCH_NAME already exists. Skipping branch creation."
+            exit 0
+          fi
+
+      - name: Create Branch
+        run: |
+          BRANCH_NAME="feature/${{ github.event.issue.number }}"
+          git checkout -b "$BRANCH_NAME"
+          git push origin "$BRANCH_NAME"

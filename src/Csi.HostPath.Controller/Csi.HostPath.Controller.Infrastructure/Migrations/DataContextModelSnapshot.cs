@@ -22,7 +22,7 @@ namespace Csi.HostPath.Controller.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AccessType")
+                    b.Property<int>("AccessMode")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("Attached")

@@ -4,11 +4,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6DCB8EF6-243
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C825FEAF-62B5-4493-B5BB-A3289956E6D4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Protos", "Protos", "{DAFF5B8A-322A-46C8-8F30-6A24FB1587F1}"
-	ProjectSection(SolutionItems) = preProject
-		src\Protos\csi.proto = src\Protos\csi.proto
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Csi.HostPath.Controller", "Csi.HostPath.Controller", "{0A5DABC5-56B7-47A4-81CD-770D6381760A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Csi.HostPath.Node", "Csi.HostPath.Node", "{708F419C-A988-4E02-B484-3FA375C84573}"
@@ -32,13 +27,21 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csi.HostPath.Node.Applicati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csi.HostPath.Node.Infrastructure", "src\Csi.HostPath.Node\Csi.HostPath.Node.Infrastructure\Csi.HostPath.Node.Infrastructure.csproj", "{3EEC698D-11BB-42C0-9CAB-E56E4F755103}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csi.HostPath.Controller.Tests", "tests\Csi.HostPath.Controller.Tests\Csi.HostPath.Controller.Tests.csproj", "{A94CE2C2-006D-4885-B436-FC4B36288A15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csi.HostPath.Node.Tests", "tests\Csi.HostPath.Node.Tests\Csi.HostPath.Node.Tests.csproj", "{314E3889-8B7C-41DB-AB37-42048472E137}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "protos", "protos", "{803EE678-3931-4AD3-ADD6-85456F8AE275}"
+	ProjectSection(SolutionItems) = preProject
+		protos\csi.proto = protos\csi.proto
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{DAFF5B8A-322A-46C8-8F30-6A24FB1587F1} = {6DCB8EF6-2434-493C-8199-A25279E10CCE}
 		{0A5DABC5-56B7-47A4-81CD-770D6381760A} = {6DCB8EF6-2434-493C-8199-A25279E10CCE}
 		{708F419C-A988-4E02-B484-3FA375C84573} = {6DCB8EF6-2434-493C-8199-A25279E10CCE}
 		{BE33CFEB-D8FF-4937-8CFB-15726F29476B} = {0A5DABC5-56B7-47A4-81CD-770D6381760A}
@@ -48,6 +51,8 @@ Global
 		{7DCF8245-E090-42A9-8776-2EEBB9D053A1} = {0A5DABC5-56B7-47A4-81CD-770D6381760A}
 		{3215DDAA-4545-4C4B-A06B-FA6CAE0B5433} = {708F419C-A988-4E02-B484-3FA375C84573}
 		{3EEC698D-11BB-42C0-9CAB-E56E4F755103} = {708F419C-A988-4E02-B484-3FA375C84573}
+		{A94CE2C2-006D-4885-B436-FC4B36288A15} = {C825FEAF-62B5-4493-B5BB-A3289956E6D4}
+		{314E3889-8B7C-41DB-AB37-42048472E137} = {C825FEAF-62B5-4493-B5BB-A3289956E6D4}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{BE33CFEB-D8FF-4937-8CFB-15726F29476B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -78,5 +83,13 @@ Global
 		{3EEC698D-11BB-42C0-9CAB-E56E4F755103}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EEC698D-11BB-42C0-9CAB-E56E4F755103}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EEC698D-11BB-42C0-9CAB-E56E4F755103}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A94CE2C2-006D-4885-B436-FC4B36288A15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A94CE2C2-006D-4885-B436-FC4B36288A15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A94CE2C2-006D-4885-B436-FC4B36288A15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A94CE2C2-006D-4885-B436-FC4B36288A15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{314E3889-8B7C-41DB-AB37-42048472E137}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{314E3889-8B7C-41DB-AB37-42048472E137}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{314E3889-8B7C-41DB-AB37-42048472E137}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{314E3889-8B7C-41DB-AB37-42048472E137}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

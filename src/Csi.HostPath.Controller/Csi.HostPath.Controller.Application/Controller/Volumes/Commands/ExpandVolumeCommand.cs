@@ -8,8 +8,11 @@ namespace Csi.HostPath.Controller.Application.Controller.Volumes.Commands;
 public record ExpandVolumeCommand(
     int? Id, 
     CapacityRangeDto? Capacity, 
-    AccessType? AccessType) 
+    AccessMode? AccessMode) 
     : IRequest<(Volume, bool)>;
+
+// add validation
+// ensure we do not modify volume capabilities
 
 public class ExpandVolumeCommandHandler : IRequestHandler<ExpandVolumeCommand, (Volume, bool)>
 {

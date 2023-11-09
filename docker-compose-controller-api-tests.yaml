@@ -1,0 +1,35 @@
+version: "3.7"
+
+services:
+  driver:
+    build:
+      context:  ./
+      dockerfile: Dockerfile-controller
+    networks:
+    - controller-tests
+    environment:
+    - ConfigurationOptions__DbPath=/etc/csi-controller/data
+    volumes:
+      - csi-data:/etc/csi-controller/data
+
+
+  tests:
+    build:
+      context: ./
+      dockerfile: Dockerfile-controller-tests
+    depends_on:
+    - driver
+    volumes:
+    - test-results:/test-results
+    environment:
+    - CONNECTION_STRING=http://driver
+    networks:
+    - controller-tests
+
+volumes:
+  csi-data:
+  test-results:
+    name: test-results
+
+networks:
+  controller-tests:

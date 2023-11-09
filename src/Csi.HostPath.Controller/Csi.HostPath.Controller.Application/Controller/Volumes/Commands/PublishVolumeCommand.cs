@@ -1,6 +1,6 @@
-﻿using System.Security;
-using Csi.HostPath.Controller.Application.Common.Exceptions;
+﻿using Csi.HostPath.Controller.Application.Common.Exceptions;
 using Csi.HostPath.Controller.Application.Common.Repositories;
+using Csi.HostPath.Controller.Application.Controller.Volumes.Validators;
 using Csi.HostPath.Controller.Domain.Volumes;
 using FluentValidation;
 using MediatR;
@@ -10,7 +10,7 @@ namespace Csi.HostPath.Controller.Application.Controller.Volumes.Commands;
 public record PublishVolumeCommand(
     int? VolumeId, 
     string? NodeId,
-    AccessType? AccessType) : IRequest<Volume>;
+    AccessMode? AccessMode) : IRequest<Volume>;
 
 public class PublishVolumeCommandValidator : AbstractValidator<PublishVolumeCommand>
 {
@@ -18,7 +18,10 @@ public class PublishVolumeCommandValidator : AbstractValidator<PublishVolumeComm
     {
         RuleFor(c => c.VolumeId).NotEmpty();
         RuleFor(c => c.NodeId).NotEmpty();
-        RuleFor(c => c.AccessType).NotEmpty().IsInEnum();
+
+        RuleFor(c => c.AccessMode)
+            .NotNull()
+            .IsInEnum();
     }
 }
 
@@ -44,10 +47,11 @@ public class PublishVolumeCommandHandler : IRequestHandler<PublishVolumeCommand,
 
             volume.SetNode(request.NodeId);
 
-            if (request.AccessType != volume.AccessType)
-            {
-                throw new ServiceLogicException("capability do not match");
-            }
+            // need mode comprehensive logic for capability matching
+            // if (request.AccessType != volume.AccessType)
+            // {
+            //     throw new ServiceLogicException("capability do not match");
+            // }
 
             await _volumeRepository.Update(volume);
             return volume;

@@ -8,11 +8,11 @@ public partial class ControllerService
 {
     public override async Task<ControllerGetCapabilitiesResponse> ControllerGetCapabilities(ControllerGetCapabilitiesRequest request, ServerCallContext context)
     {
-        var capabilities = await _sender.Send(new GetCapabilitiesQuery());
+        var capabilities = await _sender.Send(new GetControllerCapabilitiesQuery());
         return ToResponse(capabilities);
     }
 
-    private ControllerGetCapabilitiesResponse ToResponse(List<Capability> capabilities)
+    private ControllerGetCapabilitiesResponse ToResponse(List<ControllerCapability> capabilities)
     {
         var response = new ControllerGetCapabilitiesResponse();
         

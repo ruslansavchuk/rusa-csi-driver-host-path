@@ -1,0 +1,22 @@
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+EXPOSE 80
+
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /build
+COPY ["src/Csi.HostPath.Controller/Csi.HostPath.Controller.Api/Csi.HostPath.Controller.Api.csproj", "src/Csi.HostPath.Controller/Csi.HostPath.Controller.Api/Csi.HostPath.Controller.Api.csproj"]
+COPY ["src/Csi.HostPath.Controller/Csi.HostPath.Controller.Application/Csi.HostPath.Controller.Application.csproj", "src/Csi.HostPath.Controller/Csi.HostPath.Controller.Application/Csi.HostPath.Controller.Application.csproj"]
+COPY ["src/Csi.HostPath.Controller/Csi.HostPath.Controller.Domain/Csi.HostPath.Controller.Domain.csproj", "src/Csi.HostPath.Controller/Csi.HostPath.Controller.Domain/Csi.HostPath.Controller.Domain.csproj"]
+COPY ["src/Csi.HostPath.Controller/Csi.HostPath.Controller.Infrastructure/Csi.HostPath.Controller.Infrastructure.csproj", "src/Csi.HostPath.Controller/Csi.HostPath.Controller.Infrastructure/Csi.HostPath.Controller.Infrastructure.csproj"]
+RUN dotnet restore "src/Csi.HostPath.Controller/Csi.HostPath.Controller.Api/Csi.HostPath.Controller.Api.csproj"
+COPY src/Csi.HostPath.Controller src/Csi.HostPath.Controller
+COPY protos protos
+
+FROM build AS publish
+RUN dotnet publish "src/Csi.HostPath.Controller/Csi.HostPath.Controller.Api/Csi.HostPath.Controller.Api.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ARG BUILD_VERSION=0.0.1
+ENV CSI_DRIVER_VERSION=$BUILD_VERSION
+ENTRYPOINT ["dotnet", "Csi.HostPath.Controller.Api.dll"]

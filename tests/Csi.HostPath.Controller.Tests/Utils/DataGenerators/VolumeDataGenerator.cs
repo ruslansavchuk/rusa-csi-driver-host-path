@@ -33,26 +33,12 @@ public class VolumeDataGenerator
 
         if (asMount)
         {
-            request.VolumeCapabilities.Add(new VolumeCapability
-            {
-                Mount = new VolumeCapability.Types.MountVolume(),
-                AccessMode = new VolumeCapability.Types.AccessMode
-                {
-                    Mode = VolumeCapability.Types.AccessMode.Types.Mode.SingleNodeWriter
-                }
-            });
+            request.VolumeCapabilities.Add(VolumeCapabilityDataGenerator.GenerateVolumeCapability());
         }
 
         if (asBlock)
         {
-            request.VolumeCapabilities.Add(new VolumeCapability
-            {
-                Block = new VolumeCapability.Types.BlockVolume(),
-                AccessMode = new VolumeCapability.Types.AccessMode
-                {
-                    Mode = VolumeCapability.Types.AccessMode.Types.Mode.SingleNodeWriter
-                }
-            });
+            request.VolumeCapabilities.Add(VolumeCapabilityDataGenerator.GenerateVolumeCapability(false));
         }
 
         return request;

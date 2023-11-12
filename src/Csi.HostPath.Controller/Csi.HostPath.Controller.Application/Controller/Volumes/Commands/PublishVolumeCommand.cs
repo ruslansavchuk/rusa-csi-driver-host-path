@@ -14,7 +14,7 @@ public record PublishVolumeCommand(
 
 public class PublishVolumeCommandValidator : AbstractValidator<PublishVolumeCommand>
 {
-    public PublishVolumeCommandValidator()
+    public PublishVolumeCommandValidator(IVolumeRepository volumeRepository)
     {
         RuleFor(c => c.VolumeId).NotEmpty();
         RuleFor(c => c.NodeId).NotEmpty();
@@ -58,7 +58,7 @@ public class PublishVolumeCommandHandler : IRequestHandler<PublishVolumeCommand,
         }
         catch (InvalidOperationException ex) when (ex.Message == "Sequence contains no elements.")
         {
-            throw new NotFoundException("volume does not exists");
+            throw new ServiceLogicException("volume does not exists");
         }
     }
 }

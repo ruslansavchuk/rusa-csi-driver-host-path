@@ -11,9 +11,9 @@ public class DeleteVolumeTests : ControllerTestsBase
     {
         var request = VolumeDataGenerator.GenerateDeleteVolumeRequest(string.Empty);
 
-        var action = () => DeleteVolume(request);
-
-        action.Should().Throw<RpcException>()
+        DeleteVolume(request)
+            .Should()
+            .Throw<RpcException>()
             .Where(e => e.StatusCode == StatusCode.InvalidArgument);
     }
     
@@ -22,33 +22,29 @@ public class DeleteVolumeTests : ControllerTestsBase
     public void ShouldSuccessfullyRemoveExistingVolume()
     {
         var volumeToCreate = VolumeDataGenerator.GenerateCreateVolumeCommand();
-        var result = CreateVolume(volumeToCreate);
+        var result = CreateVolume(volumeToCreate)();
 
         var request = VolumeDataGenerator.GenerateDeleteVolumeRequest(result.Volume.VolumeId);
 
-        var action = () => DeleteVolume(request);
-
-        action.Should().NotThrow();
+        DeleteVolume(request).Should().NotThrow();
     }
     
     [Fact]
     public void ShouldSuccessWhenTryToDeleteAlreadyDeletedVolume()
     {
         var volumeToCreate = VolumeDataGenerator.GenerateCreateVolumeCommand();
-        var result = CreateVolume(volumeToCreate);
+        var result = CreateVolume(volumeToCreate)();
         var request = VolumeDataGenerator.GenerateDeleteVolumeRequest(result.Volume.VolumeId);
 
         DeleteVolume(request);
-        var action = () => DeleteVolume(request);
-
-        action.Should().NotThrow();
+        
+        DeleteVolume(request).Should().NotThrow();
     }
     
     [Fact]
     public void ShouldSuccessWhenInvalidVolumeIdProvided()
     {
         var request = VolumeDataGenerator.GenerateDeleteVolumeRequest(Guid.NewGuid().ToString());
-        var action = () => DeleteVolume(request);
-        action.Should().NotThrow();
+        DeleteVolume(request).Should().NotThrow();
     }
 }

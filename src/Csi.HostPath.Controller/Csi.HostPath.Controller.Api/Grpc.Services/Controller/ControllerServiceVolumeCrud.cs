@@ -37,14 +37,16 @@ public partial class ControllerService
         return command;
     }
 
-    private static AccessMode? ToCapability(VolumeCapability capability) => 
-        capability.AccessTypeCase switch
-        {
-            VolumeCapability.AccessTypeOneofCase.Block => null,
-            VolumeCapability.AccessTypeOneofCase.Mount => (AccessMode?)capability.AccessMode?.Mode,
-            VolumeCapability.AccessTypeOneofCase.None => null,
-            _ => throw new ArgumentOutOfRangeException()
-        };
+    private static AccessMode? ToCapability(VolumeCapability? capability) =>
+        capability is null
+            ? null
+            : capability.AccessTypeCase switch
+            {
+                VolumeCapability.AccessTypeOneofCase.Block => null,
+                VolumeCapability.AccessTypeOneofCase.Mount => (AccessMode?) capability.AccessMode?.Mode,
+                VolumeCapability.AccessTypeOneofCase.None => null,
+                _ => throw new ArgumentOutOfRangeException()
+            };
 
     private Volume ToVolumeDto(Csi.HostPath.Controller.Domain.Volumes.Volume volume)
     {

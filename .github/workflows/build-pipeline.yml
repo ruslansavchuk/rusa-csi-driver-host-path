@@ -1,0 +1,170 @@
+name: build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "main"
+      - "develop"
+      - "feature/*"
+    tags:
+      - "*"
+
+jobs:
+  versioning:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.versioning.outputs.value }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - id: commit
+        name: Get commit info
+        uses: prompt/actions-commit-hash@v3
+
+      - name: Set build version
+        id: versioning
+        run: |
+          if [[ -n "$GITHUB_REF" && "$GITHUB_REF" == refs/tags/* ]]; then
+            BUILD_VERSION="${GITHUB_REF#refs/tags/}"
+          else
+            BUILD_VERSION="v0.0.0-${{ steps.commit.outputs.short }}"
+          fi
+          echo "value=$BUILD_VERSION" >> "$GITHUB_OUTPUT"
+
+  build-controller:
+    runs-on: ubuntu-latest
+    needs:
+      - versioning
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Controller images
+        uses: docker/build-push-action@v5
+        with:
+          context: ./
+          file: ./Dockerfile-controller
+          push: true
+          build-args: |
+            BUILD_VERSION=${{ needs.versioning.outputs.version }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rusa-hostpath-csi-controller:${{ needs.versioning.outputs.version }}
+
+  build-node:
+    runs-on: ubuntu-latest
+    needs:
+      - versioning
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Node images
+        uses: docker/build-push-action@v5
+        with:
+          context: ./
+          file: ./Dockerfile-node
+          push: true
+          build-args: |
+            BUILD_VERSION=${{ needs.versioning.outputs.version }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/rusa-hostpath-csi-node:${{ needs.versioning.outputs.version }}
+
+  run-controller-api-tests:
+    runs-on: ubuntu-latest
+    needs:
+      - build-controller
+    permissions:
+      checks: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Execute API tests
+        timeout-minutes: 5
+        run: |
+          docker compose -f docker-compose-controller-api-tests.yaml up --build --abort-on-container-exit || exit 0
+          docker run -d --rm --name dummy -v test-results:/tr alpine tail -f /dev/null
+          docker cp dummy:/tr/testresults.trx testresults.trx
+          docker stop dummy
+          docker compose -f docker-compose-controller-api-tests.yaml rm -fsv
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
+        if: always()
+        with:
+          files: |
+            **/*.trx
+
+  run-node-api-tests:
+    runs-on: ubuntu-latest
+    needs:
+      - build-node
+    permissions:
+      checks: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Execute API tests
+        timeout-minutes: 5
+        run: |
+          docker compose -f docker-compose-node-api-tests.yaml up --build --abort-on-container-exit || exit 0
+          docker run -d --rm --name dummy -v test-results:/tr alpine tail -f /dev/null
+          docker cp dummy:/tr/testresults.trx testresults.trx
+          docker stop dummy
+          docker compose -f docker-compose-node-api-tests.yaml rm -fsv
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
+        if: always()
+        with:
+          files: |
+            **/*.trx
+
+  publish-build-artifacts:
+    runs-on: ubuntu-latest
+    needs:
+      - versioning
+      - run-node-api-tests
+      - run-controller-api-tests
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare build artifacts
+        run: |
+          sed -i 's/version: 0.0.1/version: ${{ needs.versioning.outputs.version }}/g' ./deploy/rusa-csi-driver-host-path/Chart.yaml
+          sed -i 's/appVersion: 0.0.1/appVersion: ${{ needs.versioning.outputs.version }}/g' ./deploy/rusa-csi-driver-host-path/Chart.yaml
+
+      - name: Publish build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: rusa-csi-driver-host-path
+          path: ./deploy/rusa-csi-driver-host-path

@@ -9,7 +9,7 @@ public class CapabilityTests : ControllerTestsBase
     public void GetControllerCapabilities()
     {
         var request = new ControllerGetCapabilitiesRequest();
-        var response = GetCapabilities(request);
+        var response = GetCapabilities(request)();
 
         var capabilities = response.Capabilities.Select(c => c.Rpc.Type);
 

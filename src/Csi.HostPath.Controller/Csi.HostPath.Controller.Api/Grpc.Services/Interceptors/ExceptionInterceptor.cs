@@ -35,7 +35,7 @@ public class ExceptionInterceptor : Interceptor
             {
                 AlreadyExistsException => StatusCode.AlreadyExists,
                 NotFoundException => StatusCode.NotFound,
-                ServiceLogicException=> StatusCode.Unknown,
+                ServiceLogicException=> StatusCode.InvalidArgument,
                 ValidationException => StatusCode.InvalidArgument,
                 _ => null
             };

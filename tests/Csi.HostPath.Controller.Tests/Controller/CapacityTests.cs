@@ -1,4 +1,5 @@
 ﻿using Csi.V1;
+using FluentAssertions;
 
 namespace Csi.HostPath.Controller.Tests.Controller;
 
@@ -8,6 +9,8 @@ public class CapacityTests : ControllerTestsBase
     public void GetControllerCapacity()
     {
         var request = new GetCapacityRequest();
-        var response = GetCapacity(request);
+        GetCapacity(request)
+            .Should()
+            .NotThrow();
     }
 }

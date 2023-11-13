@@ -185,6 +185,9 @@ jobs:
         with:
           name: rusa-csi-driver-host-path
 
+      - name: Archive artifact
+        run: tar -czvf rusa-csi-driver-host-path.tar.gz rusa-csi-driver-host-path
+
       - name: Create GitHub Release
         id: create-release
         uses: actions/create-release@v1
@@ -203,6 +206,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: rusa-csi-driver-host-path.zip
-          asset_name: rusa-csi-driver-host-path.zip
+          asset_path: rusa-csi-driver-host-path.tar.gz
+          asset_name: rusa-csi-driver-host-path.tar.gz
           asset_content_type: application/zip

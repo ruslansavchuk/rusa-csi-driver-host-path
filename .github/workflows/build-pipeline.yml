@@ -188,6 +188,8 @@ jobs:
       - name: Create GitHub Release
         id: create-release
         uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ needs.versioning.outputs.version }}
           release_name: Release ${{ needs.versioning.outputs.version }}
@@ -197,6 +199,8 @@ jobs:
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: rusa-csi-driver-host-path.zip

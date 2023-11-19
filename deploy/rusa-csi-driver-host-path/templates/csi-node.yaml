@@ -8,7 +8,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{- include "csi-node-labels" . | nindent 6 }}
+      {{- include "csi-node-selectors" . | nindent 6 }}
   template:
     metadata:
       labels:
@@ -42,7 +42,7 @@ spec:
           mountPath: /run/csi
         - name: registration-dir
           mountPath: /registration
-      - name: csi-driver-node
+      - name: csi-node-driver
         image: ruslansavchuk/rusa-hostpath-csi-node:{{ $.Chart.Version }}
         imagePullPolicy: Always
         env:
@@ -83,7 +83,7 @@ spec:
       # it is the place where csi node will store its data
       - name: csi-data-dir
         hostPath:
-          path: /var/lib/csi-hostpath-data/
+          path: {{ .Values.nodeDataDir }}
           type: DirectoryOrCreate
       - name: device-dir
         hostPath:

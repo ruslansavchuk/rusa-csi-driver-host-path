@@ -8,7 +8,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{- include "csi-controller-labels" . | nindent 6 }}
+      {{- include "csi-controller-selectors" . | nindent 6 }}
   replicas: 1
   template:
     metadata:
@@ -37,15 +37,19 @@ spec:
         volumeMounts:
         - name: socket-dir
           mountPath: /run/csi
-      - name: host-path-csi
+      - name: csi-controller-driver
         image: ruslansavchuk/rusa-hostpath-csi-controller:{{ $.Chart.Version }}
         imagePullPolicy: Always
         env:
         - name: ConfigurationOptions__UnixSocket
           value: /run/csi/socket
+        - name: ConfigurationOptions__DbPath
+          value: /var/lib/csi-dir
         volumeMounts:
         - name: socket-dir
           mountPath: /run/csi
+        - name: csi-dir
+          mountPath: /var/lib/csi-dir
       - name: liveness-probe
         imagePullPolicy: Always
         image: registry.k8s.io/sig-storage/livenessprobe:v2.9.0
@@ -55,3 +59,8 @@ spec:
       volumes:
       - name: socket-dir
         emptyDir: {}
+      # it is the place where csi contoller stores metadata
+      - name: csi-dir
+        hostPath:
+          path: {{ .Values.controllerStateDir }}
+          type: DirectoryOrCreate

@@ -7,6 +7,6 @@ metadata:
     {{- include "csi-controller-service-labels" . | nindent 4 }}
 spec:
   selector:
-    {{- include "csi-controller-labels" . | nindent 4 }}
+    {{- include "csi-controller-selectors" . | nindent 4 }}
   ports:
   - port: 80

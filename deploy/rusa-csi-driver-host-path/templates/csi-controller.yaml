@@ -8,7 +8,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{- include "csi-controller-labels" . | nindent 6 }}
+      {{- include "csi-controller-selectors" . | nindent 6 }}
   replicas: 1
   template:
     metadata:

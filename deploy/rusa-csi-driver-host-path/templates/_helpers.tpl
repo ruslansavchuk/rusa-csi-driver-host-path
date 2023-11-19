@@ -31,7 +31,15 @@ app.kubernetes.io/component: csi-controller
 {{- end }}
 
 {{/*
-Csi node plugion labels
+Csi controller labels
+*/}}
+{{- define "csi-controller-selectors" -}}
+{{ include "csi-common-selectors" . }}
+app.kubernetes.io/component: csi-controller
+{{- end }}
+
+{{/*
+Csi node plugin labels
 */}}
 {{- define "csi-node-labels" -}}
 {{ include "csi-common-labels" . }}
@@ -39,29 +47,28 @@ app.kubernetes.io/component: csi-node
 {{- end }}
 
 {{/*
-Csi storage class labels
+Csi node plugin selector labels
 */}}
-{{- define "csi-storage-class-labels" -}}
-{{ include "csi-common-labels" . }}
-app.kubernetes.io/component: storage-class
-{{- end }}
-
-{{/*
-Csi driver labels
-*/}}
-{{- define "csi-driver-labels" -}}
-{{ include "csi-common-labels" . }}
-app.kubernetes.io/component: csi-driver
+{{- define "csi-node-selectors" -}}
+{{ include "csi-common-selectors" . }}
+app.kubernetes.io/component: csi-node
 {{- end }}
 
 {{/*
 General labels that should be attached to all objects
 */}}
 {{- define "csi-common-labels" -}}
+{{ include "csi-common-selectors" . }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+
+{{/*
+General selector labels that should be attached to all objects
+*/}}
+{{- define "csi-common-selectors" -}}
 app.kubernetes.io/part-of: {{ include "csi-name" . }}
 app.kubernetes.io/name: {{ include "csi-name" . }}
 app.kubernetes.io/instance: {{ include "csi-name" . }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 
 {{/*

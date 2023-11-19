@@ -8,7 +8,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{- include "csi-node-labels" . | nindent 6 }}
+      {{- include "csi-node-selectors" . | nindent 6 }}
   template:
     metadata:
       labels:

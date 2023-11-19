@@ -83,7 +83,7 @@ spec:
       # it is the place where csi node will store its data
       - name: csi-data-dir
         hostPath:
-          path: /var/lib/csi-hostpath/data/
+          path: {{ .Values.nodeDataDir }}
           type: DirectoryOrCreate
       - name: device-dir
         hostPath:

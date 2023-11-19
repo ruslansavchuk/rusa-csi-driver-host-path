@@ -62,5 +62,5 @@ spec:
       # it is the place where csi contoller stores metadata
       - name: csi-dir
         hostPath:
-          path: /var/lib/csi-hostpath/metadata/
+          path: {{ .Values.controllerStateDir }}
           type: DirectoryOrCreate

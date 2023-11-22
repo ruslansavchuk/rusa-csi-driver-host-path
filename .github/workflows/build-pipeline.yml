@@ -169,6 +169,32 @@ jobs:
           name: rusa-csi-driver-host-path
           path: ./deploy/rusa-csi-driver-host-path
 
+  deploy-to-dev-env:
+    runs-on: ubuntu-latest
+    environment: production
+    needs:
+      - publish-build-artifacts
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: rusa-csi-driver-host-path
+          path: ./rusa-csi-driver-host-path
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: "v3.0.2"
+
+      - name: Set-up kubernetes config
+        run: echo "${{ secrets.KUBE_CONFIG_BASE64 }}" | base64 --decode > kubeconfig.yaml
+
+      - name: Deploy Helm Chart
+        run: helm upgrade --install -n test --create-namespace csi-driver-hostpath ./rusa-csi-driver-host-path --debug
+        env:
+          KUBECONFIG: ${{ github.workspace }}/kubeconfig.yaml
+
   release:
     needs:
       - publish-build-artifacts

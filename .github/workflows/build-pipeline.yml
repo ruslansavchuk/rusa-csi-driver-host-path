@@ -188,7 +188,9 @@ jobs:
           version: "v3.12.3"
 
       - name: Set-up kubernetes config
-        run: echo "${{ secrets.KUBE_CONFIG_BASE64 }}" | base64 --decode > '${{ github.workspace }}/kubeconfig.yaml'
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_BASE64 }}" | base64 --decode > '${{ github.workspace }}/kubeconfig.yaml'
+          chmod 600 '${{ github.workspace }}/kubeconfig.yaml'
 
       - name: Deploy Helm Chart
         run: helm upgrade --install -n test --create-namespace csi-driver-hostpath --debug --kubeconfig '${{ github.workspace }}/kubeconfig.yaml' ./rusa-csi-driver-host-path

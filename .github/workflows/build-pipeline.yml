@@ -185,7 +185,7 @@ jobs:
       - name: Setup Helm
         uses: azure/setup-helm@v1
         with:
-          version: "v3.0.2"
+          version: "v3.12.3"
 
       - name: Set-up kubernetes config
         run: echo "${{ secrets.KUBE_CONFIG_BASE64 }}" | base64 --decode > kubeconfig.yaml

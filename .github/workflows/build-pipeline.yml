@@ -193,7 +193,9 @@ jobs:
           chmod 600 '${{ github.workspace }}/kubeconfig.yaml'
 
       - name: Deploy Helm Chart
-        run: helm upgrade --install -n test --create-namespace csi-driver-hostpath --debug --kubeconfig '${{ github.workspace }}/kubeconfig.yaml' ./rusa-csi-driver-host-path
+        run: |
+          cat '${{ github.workspace }}/kubeconfig.yaml'
+          helm upgrade --install -n test --create-namespace csi-driver-hostpath --debug --kubeconfig '${{ github.workspace }}/kubeconfig.yaml' ./rusa-csi-driver-host-path
 
   release:
     needs:

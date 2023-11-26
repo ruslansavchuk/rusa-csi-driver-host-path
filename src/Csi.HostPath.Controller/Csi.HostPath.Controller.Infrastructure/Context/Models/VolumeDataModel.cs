@@ -9,7 +9,6 @@ public class VolumeDataModel
     public int Id { get; set; }
     public string Name { get; set; }
     public long Capacity { get; set; }
-    public string? Path { get; set; }
     public AccessMode AccessMode { get; set; }
     public bool Ephemeral { get; set; }
     public string? NodeId { get; set; }

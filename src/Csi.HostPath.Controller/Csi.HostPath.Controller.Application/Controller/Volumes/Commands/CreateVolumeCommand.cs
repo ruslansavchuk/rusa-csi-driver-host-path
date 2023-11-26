@@ -67,8 +67,7 @@ public class CreateVolumeRequestHandler : IRequestHandler<CreateVolumeCommand, V
 			capacity, 
 			false, 
 			ephemeral,
-			request.AccessModes!.Single(), 
-			null, 
+			request.AccessModes!.Single(),
 			null, 
 			false);
 		

@@ -11,7 +11,8 @@ namespace Csi.HostPath.Controller.Application.Controller.Volumes.Commands;
 public record CreateVolumeCommand(
 	string Name, 
 	CapacityRangeDto? Capacity,
-	List<AccessMode?>? AccessModes)
+	List<AccessMode?>? AccessModes,
+	Dictionary<string, string> VolumeContext)
 	: IRequest<Volume>;
 
 public class CreateVolumeValidator : AbstractValidator<CreateVolumeCommand>
@@ -59,9 +60,25 @@ public class CreateVolumeRequestHandler : IRequestHandler<CreateVolumeCommand, V
 			return existingVolume;
 		}
 
-		var volume = Volume.Create(request.Name, capacity, false, false, request.AccessModes!.Single(), null, null, false);
+		var ephemeral = IsEphemeral(request.VolumeContext);
+
+		var volume = Volume.Create(
+			request.Name,
+			capacity, 
+			false, 
+			ephemeral,
+			request.AccessModes!.Single(), 
+			null, 
+			null, 
+			false);
+		
 		await _volumeRepository.Add(volume);
 
 		return volume; 
 	}
+
+	private static bool IsEphemeral(Dictionary<string, string> volumeContext)
+		=> volumeContext.TryGetValue("csi.storage.k8s.io/ephemeral", out var value)
+		   && bool.TryParse(value, out var ephemeral)
+		   && ephemeral;
 }

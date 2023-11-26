@@ -27,12 +27,13 @@ public partial class ControllerService
         var capabilities = request.VolumeCapabilities
             .Select(ToCapability)
             .ToList();
-        
+
         var command = new CreateVolumeCommand(request.Name,
             new CapacityRangeDto(
-                request.CapacityRange?.LimitBytes, 
+                request.CapacityRange?.LimitBytes,
                 request.CapacityRange?.RequiredBytes),
-            capabilities);
+            capabilities,
+            request.Parameters.ToDictionary(p => p.Key, p => p.Value));
 
         return command;
     }

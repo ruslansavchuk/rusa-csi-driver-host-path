@@ -1,5 +1,7 @@
 # CSI Hostpath Driver
 
+I use volume name as volume id because i know 
+
 This repository contains the CSI hostpath driver.
 The driver can be easilly deployed using helm chart published together with the release.
 

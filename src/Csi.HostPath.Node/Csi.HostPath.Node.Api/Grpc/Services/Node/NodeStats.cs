@@ -8,7 +8,7 @@ public partial class NodeService
 {
     public override async Task<NodeGetVolumeStatsResponse> NodeGetVolumeStats(NodeGetVolumeStatsRequest request, ServerCallContext context)
     {
-        var query = new GetVolumeStats(ToVolumeId(request.VolumeId));
+        var query = new GetVolumeStats(request.VolumeId);
         var stats = await _mediator.Send(query, context.CancellationToken);
         return ToResponse(stats);
     }

@@ -7,7 +7,6 @@ public class Volume : EntityBase
 {
     public string Name { get; private set; }
     public Size Capacity { get; private set; }
-    public string? Path { get; private set; }
     public AccessMode AccessMode { get; private set; }
     public bool Ephemeral { get; private set; }
     public string? NodeId { get; private set; }
@@ -16,18 +15,26 @@ public class Volume : EntityBase
 
     public Dictionary<string, string> Context => new()
     {
-        {"capacity-bytes", Capacity.ToString() }
+        { "capacity-bytes", Capacity.ToString() },
+        { "volume-name", Name },
+        { "ephemeral", Ephemeral.ToString() }
     };
 
-    private Volume(int id, string name, Size? capacity, bool attached, bool ephemeral, AccessMode? accessMode,
-        string? path, string? nodeId, bool readOnlyAttach)
+    private Volume(
+        int id, 
+        string name, 
+        Size? capacity, 
+        bool attached, 
+        bool ephemeral, 
+        AccessMode? accessMode, 
+        string? nodeId, 
+        bool readOnlyAttach)
     {
         Id = id;
         Name = name ?? throw new ArgumentException("name is required", nameof(name));
         Capacity = capacity != null && capacity > 0
             ? capacity
             : throw new ArgumentException("capacity should be bigger than 0", nameof(capacity));
-        Path = path;
         NodeId = nodeId;
         Attached = attached;
         Ephemeral = ephemeral;
@@ -60,15 +67,28 @@ public class Volume : EntityBase
         Capacity = capacity;
     }
 
-    public static Volume Create(string name, Size? capacity, bool attached, bool ephemeral, AccessMode? accessMode, 
-        string? path, string? nodeId, bool readOnlyAttach)
+    public static Volume Create(
+        string name, 
+        Size? capacity, 
+        bool attached, 
+        bool ephemeral, 
+        AccessMode? accessMode, 
+        string? nodeId, 
+        bool readOnlyAttach)
     {
-        return new Volume(0, name, capacity, attached, ephemeral, accessMode, path, nodeId, readOnlyAttach);
+        return new Volume(0, name, capacity, attached, ephemeral, accessMode, nodeId, readOnlyAttach);
     }
 
-    public static Volume Restore(int id, string name, Size? capacity, bool attached, bool ephemeral, AccessMode accessMode,
-        string? path, string? nodeId, bool readOnlyAttach)
+    public static Volume Restore(
+        int id, 
+        string name, 
+        Size? capacity, 
+        bool attached, 
+        bool ephemeral, 
+        AccessMode accessMode, 
+        string? nodeId, 
+        bool readOnlyAttach)
     {
-        return new Volume(id, name, capacity, attached, ephemeral, accessMode, path, nodeId, readOnlyAttach);
+        return new Volume(id, name, capacity, attached, ephemeral, accessMode, nodeId, readOnlyAttach);
     }
 }

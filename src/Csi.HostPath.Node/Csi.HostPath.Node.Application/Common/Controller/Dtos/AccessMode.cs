@@ -1,10 +1,9 @@
-﻿namespace Csi.HostPath.Controller.Domain.Volumes;
+﻿namespace Csi.HostPath.Node.Application.Common.Controller.Dtos;
 
 public enum AccessMode
 {
     Unknown = 0,
     SingleNodeWriter = 1,
     SingleNodeReaderOnly = 2,
-    SingleNodeSingleWriter = 6,
     SingleNodeMultiWriter = 7
 }

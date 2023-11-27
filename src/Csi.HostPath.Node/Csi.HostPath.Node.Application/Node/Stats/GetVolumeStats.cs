@@ -7,7 +7,7 @@ namespace Csi.HostPath.Node.Application.Node.Stats;
 
 public record VolumeStats(long TotalBytes, long UsedBytes);
 
-public record GetVolumeStats(int VolumeId) : IRequest<VolumeStats>;
+public record GetVolumeStats(string VolumeId) : IRequest<VolumeStats>;
 
 public class GetVolumeStatsHandler : IRequestHandler<GetVolumeStats, VolumeStats>
 {

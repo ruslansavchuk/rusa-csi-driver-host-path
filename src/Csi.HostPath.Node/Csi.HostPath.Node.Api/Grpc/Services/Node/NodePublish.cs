@@ -9,7 +9,7 @@ public partial class NodeService
     public override async Task<NodePublishVolumeResponse> NodePublishVolume(NodePublishVolumeRequest request, ServerCallContext context)
     {
         var command = new PublishVolumeCommand(
-            ToVolumeId(request.VolumeId), 
+            request.VolumeId, 
             request.TargetPath, 
             request.StagingTargetPath,
             request.Readonly, 
@@ -24,7 +24,7 @@ public partial class NodeService
 
     public override async Task<NodeUnpublishVolumeResponse> NodeUnpublishVolume(NodeUnpublishVolumeRequest request, ServerCallContext context)
     {
-        var command = new UnpublishVolumeCommand(ToVolumeId(request.VolumeId), request.TargetPath);
+        var command = new UnpublishVolumeCommand(request.VolumeId, request.TargetPath);
         await _mediator.Send(command, context.CancellationToken);
         return new NodeUnpublishVolumeResponse();
     }

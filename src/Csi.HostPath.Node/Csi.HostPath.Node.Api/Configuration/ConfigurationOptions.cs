@@ -7,5 +7,6 @@ public class ConfigurationOptions : INodeConfiguration
     public string UnixSocket { get; set; }
     public string CsiDataDir { get; set; }
     public string NodeId { get; set; }
-    public int? MaxVolumesPerNode { get; }
+    public int? MaxVolumesPerNode { get; set; }
+    public string ControllerEndpoint { get; set; }
 }

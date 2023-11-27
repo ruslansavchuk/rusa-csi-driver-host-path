@@ -1,30 +1,44 @@
 version: "3.7"
 
 services:
-  driver:
+  controller:
+    build:
+      context:  ./
+      dockerfile: Dockerfile-controller
+    networks:
+    - node-tests
+    environment:
+    - ConfigurationOptions__DbPath=/etc/csi-controller/data
+    volumes:
+      - csi-controller-data:/etc/csi-controller/data
+
+  node:
     build:
       context:  ./
       dockerfile: Dockerfile-node
+    depends_on:
+    - controller
     networks:
     - node-tests
     volumes:
-    - csi-data:/tmp/csi-data-dir
+    - csi-node-data:/tmp/csi-data-dir
 
   tests:
     build:
       context: ./
       dockerfile: Dockerfile-node-tests
     depends_on:
-    - driver
+    - node
     volumes:
     - test-results:/test-results
     environment:
-    - CONNECTION_STRING=http://driver
+    - CONNECTION_STRING=http://node
     networks:
     - node-tests
 
 volumes:
-  csi-data:
+  csi-node-data:
+  csi-controller-data:
   test-results:
     name: test-results
 

@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Csi.HostPath.Node.Application.Node.Stage;
 
-public record StageVolumeCommand(int VolumeId, string StagPath, Dictionary<string, string> Context) : IRequest;
+public record StageVolumeCommand(string VolumeId, string StagPath, Dictionary<string, string> Context) : IRequest;
 
 public class StageVolumeCommandHandler : IRequestHandler<StageVolumeCommand>
 {

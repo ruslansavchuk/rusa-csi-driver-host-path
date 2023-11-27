@@ -55,6 +55,8 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: spec.nodeName
+        - name: ConfigurationOptions__ControllerEndpoint
+          value: http://{{ include "csi-controller-service-name" . }}
         volumeMounts:
         - name: kubelet-dir
           mountPath: /var/lib/kubelet

@@ -30,6 +30,7 @@ public static class Extensions
             builder.WebHost.ConfigureKestrel(options =>
             {
                 options.ListenUnixSocket(ops.Value.UnixSocket);
+                options.ListenAnyIP(80);
             });    
         }
     }

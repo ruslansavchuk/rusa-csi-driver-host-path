@@ -26,6 +26,7 @@ if (!string.IsNullOrWhiteSpace(ops.Value.UnixSocket))
     builder.WebHost.ConfigureKestrel(options =>
     {
         options.ListenUnixSocket(ops.Value.UnixSocket);
+        options.ListenAnyIP(80);
     });    
 }
 

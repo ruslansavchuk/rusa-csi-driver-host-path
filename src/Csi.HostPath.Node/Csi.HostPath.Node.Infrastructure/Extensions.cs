@@ -17,6 +17,8 @@ public static class Extensions
         services.AddGrpcClient<Csi.V1.Controller.ControllerClient>((serviceProvider, options) =>
         {
             var nodeConfig = serviceProvider.GetRequiredService<INodeConfiguration>();
+            
+            Console.WriteLine(nodeConfig.ControllerEndpoint);
             options.Address = new Uri(nodeConfig.ControllerEndpoint);
         });
 

@@ -75,7 +75,7 @@ app.kubernetes.io/instance: {{ include "csi-name" . }}
 Define service name
 */}}
 {{- define "csi-controller-service-name" -}}
-{{- default "hostpath-csi-controller" .Values.serviceName | quote }}
+{{- default "hostpath-csi-controller" .Values.serviceName }}
 {{- end }}
 
 {{/*

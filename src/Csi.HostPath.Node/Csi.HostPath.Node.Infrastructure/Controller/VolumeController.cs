@@ -86,7 +86,15 @@ public class VolumeController : IVolumeController
         {
             VolumeId = volumeId,
             NodeId = nodeId,
-            Readonly = false
+            Readonly = false,
+            VolumeCapability = new VolumeCapability
+            {
+                Mount = new VolumeCapability.Types.MountVolume(),
+                AccessMode = new VolumeCapability.Types.AccessMode
+                {
+                    Mode = VolumeCapability.Types.AccessMode.Types.Mode.SingleNodeSingleWriter
+                }
+            }
         };
 
         await _client.ControllerPublishVolumeAsync(publishVolumeRequest, cancellationToken: cancellationToken);

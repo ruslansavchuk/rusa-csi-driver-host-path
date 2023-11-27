@@ -15,7 +15,9 @@ public class Volume : EntityBase
 
     public Dictionary<string, string> Context => new()
     {
-        {"capacity-bytes", Capacity.ToString() }
+        { "capacity-bytes", Capacity.ToString() },
+        { "volume-name", Name },
+        { "ephemeral", Ephemeral.ToString() }
     };
 
     private Volume(

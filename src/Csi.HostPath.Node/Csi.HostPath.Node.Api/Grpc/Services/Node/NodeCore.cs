@@ -13,8 +13,6 @@ public partial class NodeService : Csi.V1.Node.NodeBase
         _mediator = mediator;
     }
 
-    private static int ToVolumeId(string volumeId) => int.Parse(volumeId);
-
     private static Dictionary<string, string> ToDictionary(MapField<string, string> data) =>
         data.ToDictionary(i => i.Key, i => i.Value);
 }

@@ -9,7 +9,7 @@ public partial class NodeService
     public override async Task<NodeStageVolumeResponse> NodeStageVolume(NodeStageVolumeRequest request, ServerCallContext context)
     {
         var command = new StageVolumeCommand(
-            ToVolumeId(request.VolumeId), 
+            request.VolumeId, 
             request.StagingTargetPath,
             ToDictionary(request.VolumeContext));
 

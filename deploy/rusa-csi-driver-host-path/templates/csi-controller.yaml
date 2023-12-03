@@ -46,7 +46,7 @@ spec:
         - name: ConfigurationOptions__DbPath
           value: /var/lib/csi-dir
         - name: ConfigurationOptions__ListeningPort
-          value: {{ .Values.controller.listeningPort }}
+          value: {{ .Values.controller.listeningPort | quote }}
         volumeMounts:
         - name: socket-dir
           mountPath: /run/csi

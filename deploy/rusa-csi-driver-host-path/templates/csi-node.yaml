@@ -51,7 +51,7 @@ spec:
         - name: ConfigurationOptions__CsiDataDir
           value: /var/lib/csi-data-dir
         - name: ConfigurationOptions__ListeningPort
-          value: {{ .Values.node.listeningPort }}
+          value: {{ .Values.node.listeningPort | quote }}
         - name: ConfigurationOptions__NodeId
           valueFrom:
             fieldRef:

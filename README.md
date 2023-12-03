@@ -1,23 +1,68 @@
-# CSI Hostpath Driver
+# CSI hostpath driver
 
-I use volume name as volume id because i know 
+## Table of Contents
 
-This repository contains the CSI hostpath driver.
-The driver can be easilly deployed using helm chart published together with the release.
+1. [Overview](#overview)
+2. [Functionality](#functionality)
+3. [Getting Started](#getting-started)
+   - [Installation](#installation)
+   - [Usage](#usage)
+4. [License](#license)
 
-The CSI driver implementation splited into several projects
-- controller
-- node
+## Overview
 
-Controller implements CSI api related to the identity and controller.
-Node Implements CSI api related to the identoty and node.
+Hostpath CSI Driver is a Kubernetes Container Storage Interface (CSI) implementation, designed to facilitate storage management in Kubernetes clusters. It provides dynamic volume provisioning and supports ephemeral volumes for various use cases.
 
-This driver based on the idea of creating the separate folder for storign all the volumes as subfolders inside
-and mounting that folder to the folder created for container using bind mount functionality of linux
+## Functionality
 
-In current implementation the only configurable things:
-node:
-- node data directory
+The driver provides empty directories that are backed by the same filesystem as EmptyDir volumes.
 
-controoler:
-- controller state directory
+## Getting Started
+
+### Installation
+
+```bash
+mkdir csi-hostpath && cd csi-hostpath
+RELEASE=$(curl https://api.github.com/repos/ruslansavchuk/rusa-csi-driver-host-path/releases/latest | grep tag_name | awk -F'"' '{print $4}')
+wget "https://github.com/ruslansavchuk/rusa-csi-driver-host-path/releases/download/$RELEASE/rusa-csi-driver-host-path.tar.gz"
+tar -xzvf rusa-csi-driver-host-path.tar.gz
+helm upgrade --install -n csi-driver-hostpath --create-namespace csi-driver-hostpath ./rusa-csi-driver-host-path --debug
+```
+
+### Usage
+
+```bash
+kubectl apply -n rusa -f - <<EOF
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: csi-hostpath-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+      volumeMounts:
+        - name: csi-hostpath-v
+          mountPath: /path/to/mount
+  volumes:
+    - name: csi-hostpath-v
+      persistentVolumeClaim:
+        claimName: csi-hostpath-pvc
+EOF
+```
+
+## License
+
+This project is licensed under the MIT License.

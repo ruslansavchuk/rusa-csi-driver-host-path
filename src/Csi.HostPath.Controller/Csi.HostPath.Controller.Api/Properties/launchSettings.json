@@ -8,6 +8,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ConfigurationOptions__UnixSocket": "",
         "ConfigurationOptions__DbPath": "./",
+        "ConfigurationOptions__ListeningPort": 80,
         "CSI_DRIVER_VERSION": "0.0.1-dev"
       }
     }

@@ -45,6 +45,8 @@ spec:
           value: /run/csi/socket
         - name: ConfigurationOptions__DbPath
           value: /var/lib/csi-dir
+        - name: ConfigurationOptions__ListeningPort
+          value: {{ .Values.controller.listeningPort | quote }}
         volumeMounts:
         - name: socket-dir
           mountPath: /run/csi
@@ -62,5 +64,5 @@ spec:
       # it is the place where csi contoller stores metadata
       - name: csi-dir
         hostPath:
-          path: {{ .Values.controllerStateDir }}
+          path: {{ .Values.controller.stateDir }}
           type: DirectoryOrCreate

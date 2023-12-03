@@ -2,11 +2,8 @@ using Csi.HostPath.Controller.Api;
 using Csi.HostPath.Controller.Api.Configuration;
 using Csi.HostPath.Controller.Application;
 using Csi.HostPath.Controller.Infrastructure;
-using Csi.HostPath.Controller.Infrastructure.Context;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Serilog;
-using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,14 +18,15 @@ builder.Services
 
 var ops = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<ConfigurationOptions>>();
 
-if (!string.IsNullOrWhiteSpace(ops.Value.UnixSocket))
+builder.WebHost.ConfigureKestrel(options =>
 {
-    builder.WebHost.ConfigureKestrel(options =>
+    if (!string.IsNullOrWhiteSpace(ops.Value.UnixSocket))
     {
         options.ListenUnixSocket(ops.Value.UnixSocket);
-        options.ListenAnyIP(80);
-    });    
-}
+    }
+
+    options.ListenAnyIP(ops.Value.ListeningPort ?? 80);
+});
 
 builder.Services
     .RegisterApplication()

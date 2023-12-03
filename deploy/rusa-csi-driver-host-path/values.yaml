@@ -1,5 +1,9 @@
 pluginName: hostpath.csi.k8s.io
 serviceName: hostpath-csi-controller
-controllerStateDir: /var/lib/csi-hostpath/metadata/
-nodeDataDir: /var/lib/csi-hostpath/data/
 setAsDefault: true
+controller:
+  stateDir: /var/lib/csi-hostpath/metadata/
+  listeningPort: 80
+node:
+  dataDir: /var/lib/csi-hostpath/data/
+  listeningPort: 80

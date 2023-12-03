@@ -26,7 +26,7 @@ mkdir csi-hostpath && cd csi-hostpath
 RELEASE=$(curl https://api.github.com/repos/ruslansavchuk/rusa-csi-driver-host-path/releases/latest | grep tag_name | awk -F'"' '{print $4}')
 wget "https://github.com/ruslansavchuk/rusa-csi-driver-host-path/releases/download/$RELEASE/rusa-csi-driver-host-path.tar.gz"
 tar -xzvf rusa-csi-driver-host-path.tar.gz
-helm upgrade --install -n test --create-namespace csi-driver-hostpath ./rusa-csi-driver-host-path --debug
+helm upgrade --install -n csi-driver-hostpath --create-namespace csi-driver-hostpath ./rusa-csi-driver-host-path --debug
 ```
 
 ### Usage

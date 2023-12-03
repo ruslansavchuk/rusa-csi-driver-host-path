@@ -7,8 +7,9 @@ services:
       dockerfile: Dockerfile-controller
     restart: on-failure
     environment:
-    # - ConfigurationOptions__UnixSocket=/sockets/controller.sock
+    - ConfigurationOptions__UnixSocket=/sockets/controller.sock
     - ConfigurationOptions__DbPath=/etc/csi-controller/data
+    - ConfigurationOptions__ListeningPort=80
     ports:
     - 6000:80
     volumes:
@@ -23,8 +24,13 @@ services:
       dockerfile: Dockerfile-node
     restart: on-failure
     environment:
-    # - ConfigurationOptions__UnixSocket=/sockets/node.sock
-    - ConfigurationOptions__CsiDataDirectory=/tmp/csi-data
+    - ConfigurationOptions__UnixSocket=/sockets/node.sock
+    - ConfigurationOptions__CsiDataDir=/tmp/csi-data
+    - ConfigurationOptions__ControllerEndpoint=http://controller  
+    - ConfigurationOptions__NodeId=rusa-test
+    - ConfigurationOptions__ListeningPort=80
+    depends_on:
+    - controller
     ports:
     - 6001:80
     volumes:

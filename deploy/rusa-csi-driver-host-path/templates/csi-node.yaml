@@ -50,6 +50,8 @@ spec:
           value: /run/csi/socket
         - name: ConfigurationOptions__CsiDataDir
           value: /var/lib/csi-data-dir
+        - name: ConfigurationOptions__ListeningPort
+          value: {{ .Values.node.listeningPort }}
         - name: ConfigurationOptions__NodeId
           valueFrom:
             fieldRef:
@@ -85,7 +87,7 @@ spec:
       # it is the place where csi node will store its data
       - name: csi-data-dir
         hostPath:
-          path: {{ .Values.nodeDataDir }}
+          path: {{ .Values.node.dataDir }}
           type: DirectoryOrCreate
       - name: device-dir
         hostPath:

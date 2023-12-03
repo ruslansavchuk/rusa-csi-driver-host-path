@@ -25,14 +25,15 @@ public static class Extensions
 
         var ops = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<ConfigurationOptions>>();
 
-        if (!string.IsNullOrWhiteSpace(ops.Value.UnixSocket))
+        builder.WebHost.ConfigureKestrel(options =>
         {
-            builder.WebHost.ConfigureKestrel(options =>
+            if (!string.IsNullOrWhiteSpace(ops.Value.UnixSocket))
             {
                 options.ListenUnixSocket(ops.Value.UnixSocket);
-                options.ListenAnyIP(80);
-            });    
-        }
+            }
+
+            options.ListenAnyIP(ops.Value.ListeningPort ?? 80);
+        });
     }
 
     public static IServiceCollection RegisterServices(this IServiceCollection services)
@@ -42,7 +43,7 @@ public static class Extensions
             options.Interceptors.Add<LoggingInterceptor>();
             options.Interceptors.Add<ExceptionInterceptor>();
         });
-        
+
         services.AddScoped<IdentityService>();
         services.AddScoped<NodeService>();
 
@@ -57,9 +58,9 @@ public static class Extensions
 
     public static IServiceCollection Configure(this IServiceCollection services)
     {
-        services.AddScoped<INodeConfiguration, ConfigurationOptions>(provider => 
+        services.AddScoped<INodeConfiguration, ConfigurationOptions>(provider =>
             provider.GetRequiredService<IOptionsMonitor<ConfigurationOptions>>().CurrentValue);
-        
+
         return services;
     }
 }
